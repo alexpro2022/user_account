@@ -1,35 +1,20 @@
 [project]
-name = "infra-template"
-version = "1.0.0"
+name = "user-account"
+version = "0.0.0"
 dependencies = [
-# APP dependencies ================
 "fastapi",
 # fastapi-cli
 # fastapi-users[sqlalchemy]
 "app-toolkit-package",
-
-# Bot dependencies ================
-"aiogram",
-
-# Validation dependencies ================
-# email-validator
-# pydantic
 "pydantic[email]",
 "pydantic_core",
 "pydantic-settings",
-
-# Repo dependencies ================
 "alembic",
 "asyncpg",
 "redis",
 "SQLAlchemy",
-# psycopg
-# psycopg-binary
-# sqlmodel
-
 "uvicorn[standard]",
 "cryptography",
-# starlette-admin
 ]
 
 
@@ -37,8 +22,8 @@ dependencies = [
 test = [
 # This is just for local migrations via sqlite
 # TO BE REMOVED !!!
-# "aiosqlite",
-# "pre-commit",
+"aiosqlite",
+"pre-commit",
 
 "httpx",
 "pytest",

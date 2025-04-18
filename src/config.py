@@ -1,8 +1,6 @@
 from pydantic import PositiveInt, SecretStr
-
 from toolkit.config import (  # noqa
     app_config,
-    bot_config,
     cache_config,
     db_config,
     testdb_config,

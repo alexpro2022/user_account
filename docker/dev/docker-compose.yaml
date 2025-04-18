@@ -2,11 +2,6 @@ name: Your_Proj_name + _dev
 
 services:
 
-  bot:
-    extends:
-      file: ../base/backend.yaml
-      service: bot_dev
-
   fastapi:
     extends:
       file: ../base/backend.yaml
