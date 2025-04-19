@@ -1,10 +1,10 @@
 from httpx import AsyncClient
-
-from src.config import db_config, testdb_config
-from src.fastapi.main import app
 from toolkit.test_tools.base_test_fastapi import API_Router
 from toolkit.test_tools.fixtures import BASE_URL
 from toolkit.test_tools.utils import assert_equal, assert_isinstance
+
+from src.config import db_config, testdb_config
+from src.fastapi.main import app
 
 
 def test__async_client_fixture(async_client: AsyncClient):

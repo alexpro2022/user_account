@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from src.auth_user.endpoints import auth, development, user
+
+# router as auth_user_router
 from src.config import app_config as c
-from src.fastapi.api.endpoints import development, secret
 
 # from src.fastapi.api.endpoints import all routers here
 
@@ -19,13 +21,13 @@ app = FastAPI(
 )
 
 for router in (
+    auth.router,
     development.router,
-    secret.router,
-    # add routers here
+    user.router,
 ):
     app.include_router(router)
 
 
-@app.get("/healthcheck")
+@app.get("/healthcheck", tags=["Healthcheck"])
 def healthcheck():
     return {"message": "OK"}

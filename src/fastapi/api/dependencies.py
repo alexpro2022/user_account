@@ -1,8 +1,8 @@
 """Application concrete dependencies."""
 
-from typing import Annotated
+# from typing import Annotated
 
-from fastapi import Depends
-from src.services.secret import SecretService
+# from fastapi import Depends
+# from src.services.secret import SecretService
 
-secret_service = Annotated[SecretService, Depends()]
+# secret_service = Annotated[SecretService, Depends()]

@@ -1,6 +1,6 @@
 # PROJECT_NAME
 
-[![Test Suite](https://github.com/alexpro2022/infra-template/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/infra-template/actions/workflows/flow_branch_test.yaml)
+http://127.0.0.1:8000/docs
 
 ===== TO BE REMOVED =====
 
