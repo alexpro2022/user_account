@@ -10,8 +10,3 @@ class AuthSettings(base.BaseConf):
 
 
 auth_conf = AuthSettings()
-
-
-# class TokenPayloadKeys(Enum):
-#     SUBJECT = "sub"
-#     EXPIRE = "exp"

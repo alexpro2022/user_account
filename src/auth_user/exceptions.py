@@ -7,29 +7,16 @@ exception_401 = partial(
     status_code=status.HTTP_401_UNAUTHORIZED,
     headers={"WWW-Authenticate": "Bearer"},
 )
-
 InvalidTokenPayload = exception_401(
     detail="Could not validate credentials",
 )
 ExpiredToken = exception_401(
     detail="Token has been expired",
 )
-IncorrectLoginCredentials = exception_401(detail="Incorrect email or password")
+IncorrectLoginCredentials = exception_401(
+    detail="Incorrect email or password",
+)
 AdminAccessOnly = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="Admin access only",
-    # headers={"WWW-Authenticate": "Bearer"},
 )
-
-
-# invalid_token_payload = HTTPException(
-#     status_code=status.HTTP_401_UNAUTHORIZED,
-#     detail="Could not validate credentials",
-#     headers={"WWW-Authenticate": "Bearer"},
-# )
-
-# expired_token = HTTPException(
-#     status_code=status.HTTP_401_UNAUTHORIZED,
-#     detail="Token has been expired",
-#     headers={"WWW-Authenticate": "Bearer"},
-# )

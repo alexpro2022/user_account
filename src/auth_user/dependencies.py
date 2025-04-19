@@ -57,5 +57,3 @@ admin = Annotated[
     Depends(get_admin),
     # Doc(""),
 ]
-
-# admin = Depends(get_admin)

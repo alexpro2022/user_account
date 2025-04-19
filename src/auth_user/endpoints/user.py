@@ -41,7 +41,7 @@ async def create_user(session: async_session, user: schemas.UserCreate):
     summary="All user records.",
     # description="",
     response_model=list[schemas.UserOut],
-    dependencies=[admin.__metadata__[0]],
+    dependencies=admin.__metadata__,
 )
 async def get_users(session: async_session):
     return await service.get_all(session, User)
