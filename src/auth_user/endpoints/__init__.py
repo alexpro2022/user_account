@@ -1,5 +1,5 @@
 # from fastapi import APIRouter
-from . import auth, development, user  # noqa
+from . import admin, auth, development, user  # noqa
 
 # router = APIRouter(tags=["V1"])
 

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.auth_user.endpoints import auth, development, user
+from src.auth_user.endpoints import admin, auth, user
 
 # router as auth_user_router
 from src.config import app_config as c
@@ -21,9 +21,10 @@ app = FastAPI(
 )
 
 for router in (
+    # development.router,
     auth.router,
-    development.router,
     user.router,
+    admin.router,
 ):
     app.include_router(router)
 
