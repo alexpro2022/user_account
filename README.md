@@ -1,42 +1,7 @@
 # PROJECT_NAME
 
-http://127.0.0.1:8000/docs
+[![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
 
-===== TO BE REMOVED =====
-
-cp -a toolkit/=new_proj_template/. .
-cp .env.example .env
-
-
-- CI/CD: test-build-push-deploy
-- Docker: centralized, development and testing
-- DB: Postgres, version on choice (via .env)
-- Config: centralized, from .env file
-- Requirements: centrilized, to update:
-    * requirements.txt according to app stack
-- Backend: Any (here simple FastAPI), code in /src, to update:
-    * api/
-    * app.py (main.py)
-- Sevice: , part of App, to update:
-    * service.py
-- Repository: standard crud, part of App, to update:
-    * models.py
-- ORM: SQLAlchemy, to make migration, see alembic/env.py
-- Tests: to update the following files:
-    * unit_tests/test_models/test_models.py
-    * integration_tests/ except utils.py
-
-CREATING APP STEPS:
-
-General:
-- Clone infra-template from GH
-- Adjust Readme.md Tech stack
-- Adjust .env and .env.example
-- Adjust requirements.txt
-
-==============================================
-
-1. bages here
 2. short description here
 
 <br>
