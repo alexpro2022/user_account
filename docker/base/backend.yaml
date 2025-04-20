@@ -12,10 +12,6 @@ template_extends_generic: &extends_backend_generic
   extends:
     service: backend_generic
 
-template_extends_bot_generic: &extends_bot_generic
-  extends:
-    service: bot_generic
-
 template_extends_fastapi_generic: &extends_fastapi_generic
   extends:
     service: fastapi_generic
@@ -61,21 +57,6 @@ services:
       - backend
 
 
-  bot_generic:
-    <<: *extends_backend_generic
-    container_name: bot
-    command: bash -c "alembic upgrade head && python -m src.bot"  # /main.py"
-
-  bot_dev:
-    <<: *extends_bot_generic
-    build: *build_app
-    develop: *develop
-
-  bot_prod:
-    <<: *extends_bot_generic
-    image: *image
-
-
   fastapi_generic:
     <<: *extends_backend_generic
     container_name: fastapi
@@ -95,23 +76,3 @@ services:
   fastapi_prod:
     <<: *extends_fastapi_generic
     image: *image
-    # "${DOCKERHUB_USERNAME}/${GITHUB_REPO_NAME}"
-    # networks:
-    #   - frontend
-    #   - backend
-    # expose:
-    #  - ${APP_DEV_PORT:-8000}
-
-
- # backend_migration:
-  #   container_name: migration
-  #   <<: *extends_backend_base
-  #   build:
-  #     context: *context
-  #     dockerfile: *Dockerfile
-  #     target: migration
-  #   command: bash -c "alembic revision --autogenerate"
-  #   volumes:  # bind mount for online coding
-  #     - ../../alembic:/app/alembic
-  #   networks:
-  #     - admin

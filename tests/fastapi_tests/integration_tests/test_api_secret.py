@@ -1,7 +1,3 @@
-from fastapi import status
-from src.config import app_conf
-from src.fastapi.api.endpoints import secret
-from tests.unit_tests.test_repos import secret_test_data as DATA
 from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 from toolkit.test_tools.mixins import (
     ClientNoCacheMixin,
@@ -9,6 +5,11 @@ from toolkit.test_tools.mixins import (
     NotFoundMixin,
     PathParamsMixin,
 )
+
+from fastapi import status
+from src.config import app_conf
+from src.fastapi.api.endpoints import secret
+from tests.unit_tests.test_repos import secret_test_data as DATA
 
 # import your endpoints here
 

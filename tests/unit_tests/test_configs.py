@@ -1,10 +1,10 @@
-from src import config
 from toolkit.test_tools import (
-    BaseTest_BotConfig,
     BaseTest_Config,
     BaseTest_DBConfig,
     BaseTest_RedisConfig,
 )
+
+from src import config
 
 
 class Test_AppConfig(BaseTest_Config):
@@ -13,10 +13,6 @@ class Test_AppConfig(BaseTest_Config):
     conf_fields = {
         "url_prefix": "/api/v1",
     }
-
-
-class Test_BotConfig(BaseTest_BotConfig):
-    module = config.bot_config
 
 
 class Test_DBConfig(BaseTest_DBConfig):
