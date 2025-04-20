@@ -14,7 +14,7 @@ def create_access_token(
     expires_delta=timedelta(minutes=auth_conf.TOKEN_LIFETIME),
 ) -> str:
     return jwt.encode(
-        key=auth_conf.SECRET_KEY,
+        key=auth_conf.SECRET_KEY.get_secret_value(),
         algorithm=auth_conf.ALGORITHM,
         payload=TokenPayload(
             sub=user.email,
@@ -28,7 +28,7 @@ def get_token_payload(token: str) -> TokenPayload | None:
         payload = TokenPayload.model_validate(
             obj=jwt.decode(
                 jwt=token,
-                key=auth_conf.SECRET_KEY,
+                key=auth_conf.SECRET_KEY.get_secret_value(),
                 algorithms=[auth_conf.ALGORITHM],
             )
         )

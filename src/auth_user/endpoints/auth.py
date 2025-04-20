@@ -1,17 +1,18 @@
 from fastapi import APIRouter
 
-from ..dependencies import AUTH_PREFIX, authenticated_user
+from ..config import auth_conf
+from ..dependencies import authenticated_user
 from ..schemas.token import Token
 from ..services.token import create_access_token
 
 router = APIRouter(
-    prefix=AUTH_PREFIX,
+    prefix=auth_conf.TOKEN_URL,
     tags=["Authentication"],
 )
 
 
 @router.post(
-    "/token",
+    "",
     summary="",
     description="",
     response_model=Token,
