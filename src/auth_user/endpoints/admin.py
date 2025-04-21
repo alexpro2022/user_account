@@ -86,7 +86,8 @@ async def delete_user(session: async_session, user_id: TypePK):
 async def update_user(
     session: async_session, user_id: TypePK, user: schemas.UserUpdate
 ):
-    update_data = hash_password(user.model_dump())
     return await try_return(
-        return_coro=service.update(session, User, user_id, **update_data)
+        return_coro=service.update(
+            session, User, user_id, **user.model_dump(exclude_none=True)
+        )
     )

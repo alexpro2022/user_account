@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from ..config import auth_conf
 from ..dependencies import authenticated_user
@@ -16,6 +16,7 @@ router = APIRouter(
     summary="",
     description="",
     response_model=Token,
+    status_code=status.HTTP_201_CREATED,
 )
 async def login_user(user: authenticated_user):
     return Token(access_token=create_access_token(user))

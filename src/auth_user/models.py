@@ -3,7 +3,7 @@ from enum import Enum
 from toolkit.models.base import Base, Mapped, mapped_column
 
 
-class Role(Enum):
+class Role(str, Enum):
     ADMIN = "ADMIN"
     USER = "USER"
 
