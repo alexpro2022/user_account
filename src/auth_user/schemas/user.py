@@ -32,8 +32,6 @@ class UserCreate(UserOut):
 
 
 class UserUpdate(BaseModel):
-    # email: EmailStr | None = None
-    # password: NonEmptyStr | None = None
     first_name: NonEmptyStr | None = None
     last_name: NonEmptyStr | None = None
     phone_number: NonEmptyStr | None = None
