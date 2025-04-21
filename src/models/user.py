@@ -1,33 +1,45 @@
-from enum import Enum
+from typing import TypeAlias
 
 from toolkit.models.base import Base, Mapped, mapped_column
 
+# from toolkit.types_app import TypePK
+# from sqlalchemy import ForeignKey, orm
 
-class Role(str, Enum):
-    ADMIN = "ADMIN"
-    USER = "USER"
-
-
-# class Role(Base):
-#     name: Mapped[str]
-#     users: Mapped[list["User"]] = orm.relationship(back_populates="role")
+# from decimal import Decimal
+CurrencyType: TypeAlias = float  # Decimal
+NotRequiredStr: TypeAlias = str | None
 
 
 class User(Base):
     email: Mapped[str] = mapped_column(unique=True, index=True)
     hashed_pwd: Mapped[str]
-    first_name: Mapped[str]
-    last_name: Mapped[str]
-    phone_number: Mapped[str]
-    # disabled: Mapped[bool | None]
-    role: Mapped[Role]
-    # role_id: Mapped[int] = mapped_column(ForeignKey('roles.id'))  # , default=1, server_default=text("1"))
-    # role: Mapped["Role"] = orm.relationship("Role", back_populates="users", lazy="joined")
+    first_name: Mapped[NotRequiredStr]
+    last_name: Mapped[NotRequiredStr]
+    phone_number: Mapped[NotRequiredStr]
+    admin: Mapped[bool] = mapped_column(default=False)
+    # accounts: Mapped[list['Account']] = orm.relationship(
+    #     back_populates='user',
+    #     cascade='all, delete-orphan',
+    #     # lazy="joined",
+    # )
 
     @property
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
-    @property
-    def is_admin(self) -> bool:
-        return self.role == Role.ADMIN
+
+# class Account(Base):
+#     user_id: Mapped[TypePK] = mapped_column(ForeignKey('user.id'))
+#     user: Mapped['User'] = orm.relationship(back_populates='accounts')
+#     balance: Mapped[CurrencyType]
+#     payments: Mapped[list['Payment']] = orm.relationship(
+#         back_populates='account',
+#         cascade='all, delete-orphan',
+#         # lazy="joined",
+#     )
+
+
+# class Payment(Base):
+#     account_id: Mapped[TypePK] = mapped_column(ForeignKey('account.id'))
+#     account: Mapped["Account"] = orm.relationship(back_populates='payments')
+#     amount: Mapped[CurrencyType]
