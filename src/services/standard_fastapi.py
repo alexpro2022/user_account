@@ -1,4 +1,4 @@
-"""Standard FastAPI pass-through service."""
+"""Standard FastAPI pass-through service for session as dependency."""
 
 from toolkit.repo.db import crud
 from toolkit.types_app import _AS, TypeModel, TypePK

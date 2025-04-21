@@ -1,5 +1,6 @@
 from typing import Any, TypeAlias
 
+from fastapi import APIRouter
 from httpx import AsyncClient, Response
 from toolkit.test_tools.base_test_fastapi import (
     _AS,
@@ -13,10 +14,8 @@ from toolkit.test_tools.base_test_fastapi import (
     setup_db,
 )
 
-from fastapi import APIRouter
-from src.auth_user.endpoints.auth import login_user
-from src.auth_user.schemas import token, user
-from src.fastapi.main import app
+from src.auth import schemas
+from src.auth.api.endpoints import login_user
 
 TypeResponseModel: TypeAlias = Any | None
 TypeHeader: TypeAlias = dict[str, str]
@@ -76,14 +75,11 @@ async def request(
 
 
 async def get_header(client: AsyncClient, login_data: dict[str, Any]):
-    t = token.Token.model_validate(
+    t = schemas.Token.model_validate(
         obj=(
             await client.post(
-                url=reverse(
-                    router=app.router,
-                    path_func=login_user,
-                ),
-                data=user.UserLoginForm(**login_data).model_dump(),
+                url=reverse(path_func=login_user),
+                data=schemas.UserLoginForm(**login_data).model_dump(),
             )
         ).json()
     )

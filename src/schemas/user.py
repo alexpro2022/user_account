@@ -2,12 +2,12 @@ from pydantic import BaseModel, EmailStr
 from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr
 
-from ..models import Role
+from src.models.user import Role
 
 
-class UserLoginForm(BaseModel):
-    username: EmailStr
-    password: NonEmptyStr
+class Me(Base):
+    email: EmailStr
+    full_name: NonEmptyStr
 
 
 class UserOut(Base):
@@ -16,11 +16,6 @@ class UserOut(Base):
     last_name: NonEmptyStr
     phone_number: NonEmptyStr
     role: Role
-
-
-class Me(Base):
-    email: EmailStr
-    full_name: NonEmptyStr
 
 
 class User(UserOut):

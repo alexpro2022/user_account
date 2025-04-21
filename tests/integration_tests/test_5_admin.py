@@ -1,8 +1,8 @@
 from toolkit.test_tools.base_test_fastapi import HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
-from src.auth_user.endpoints import admin, user
-from src.auth_user.schemas.user import UserOut
+from src.api.endpoints import admin, user
+from src.schemas.user import UserOut
 from tests.fixtures.testdata import ADMIN_TEST_DATA, USER_TEST_DATA
 from tests.fixtures.testtools import BaseTest_API
 from tests.integration_tests.utils import PathParamMixin

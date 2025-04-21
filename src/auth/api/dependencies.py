@@ -1,16 +1,15 @@
 from typing import Annotated
 
-from toolkit.types_app import NonEmptyStr
-
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from toolkit.types_app import NonEmptyStr
+from typing_extensions import Doc
 
-from .config import auth_conf
+from src.models.user import User
 
-# from .models import Role
+from ..config import auth_conf
+from ..schemas import UserLoginForm
 from .exceptions import AdminAccessOnly
-from .models import User
-from .schemas.user import UserLoginForm
 
 # from typing_extensions import Doc
 
@@ -26,17 +25,17 @@ login_form_data = Annotated[
     # Doc(""),
 ]
 
-from .services.user import authenticate_user, get_current_user  # noqa
+from ..services.user import authenticate_user, get_current_user  # noqa
 
 authenticated_user = Annotated[
     User,
     Depends(authenticate_user),
-    # Doc(
-    #     """
-    #     Dependency is for `/login` endpoint to obtain a token
-    #     for existing user with verified password.
-    #     """
-    # ),
+    Doc(
+        """
+        Dependency is for `/login` endpoint to obtain a token
+        for existing user with verified password.
+        """
+    ),
 ]
 current_user = Annotated[
     User,

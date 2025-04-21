@@ -1,6 +1,6 @@
 from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 
-from src.fastapi import main
+from src import main
 
 
 class Test_Healthcheck(BaseTest_API):

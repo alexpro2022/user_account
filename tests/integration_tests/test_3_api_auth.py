@@ -1,8 +1,8 @@
 from toolkit.test_tools.base_test_fastapi import HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
-from src.auth_user.endpoints.auth import login_user
-from src.auth_user.schemas.token import Token
+from src.auth.api.endpoints import login_user
+from src.auth.schemas import Token
 from tests.fixtures.testdata import USER_TEST_DATA
 from tests.fixtures.testtools import BaseTest_API
 

@@ -2,7 +2,40 @@
 
 [![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
 
-2. short description here
+
+## Создание и редактирование пользователей:
+
+  #### Администратор создается при первом запуске по учетным данным из **.env**-файла, по умолчанию:
+  ```bash
+  EMAIL=admin@admin.com
+  PASSWORD=admin_pwd
+  FIRST_NAME=admin
+  LAST_NAME=admin
+  PHONE_NUMBER=+79991112233
+  ```
+
+  #### Пользователь может быть создан с любыми правами.
+  - Данные для создания:
+  ```json
+  {
+    "email": "user@user.com",
+    "password": "user_pwd",
+    "first_name": "user_name",
+    "last_name": "user_surname",
+    "phone_number": "+79211234567",
+    "role": "USER"
+  }
+  ```
+  - и редактирования:
+
+  ```json
+  {
+    "first_name": "alex",
+    "last_name": "pro",
+    "phone_number": "+79213452402",
+    "role": "ADMIN"
+  }
+  ```
 
 <br>
 
