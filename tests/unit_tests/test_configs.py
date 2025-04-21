@@ -5,7 +5,7 @@ from toolkit.test_tools import (
 )
 
 from src import config
-from src.auth_user import config as auth_config
+from src.auth import config as auth_config
 
 
 class Test_AppConfig(BaseTest_Config):

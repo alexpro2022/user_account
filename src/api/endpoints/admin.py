@@ -1,3 +1,4 @@
+from fastapi import APIRouter, status
 from toolkit.api.fastapi.dependencies import async_session
 from toolkit.api.fastapi.responses import (
     response_400_already_exists,
@@ -7,15 +8,13 @@ from toolkit.api.fastapi.utils import try_return
 from toolkit.repo.db.exceptions import AlreadyExists
 from toolkit.types_app import TypePK
 
-from fastapi import APIRouter, status
-from src.auth_user.schemas import user as schemas
+from src.auth.api.dependencies import admin_access_only
+from src.auth.config import auth_conf
+from src.auth.services.password import hash_password
 from src.config import app_conf
-from src.services import service
-
-from ..config import auth_conf
-from ..dependencies import admin_access_only
-from ..models import User
-from ..services.password import hash_password
+from src.models.user import User
+from src.schemas import user as schemas
+from src.services import standard_fastapi as service
 
 _description = dict(description=auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)

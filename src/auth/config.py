@@ -1,4 +1,4 @@
-from pydantic import PositiveInt, SecretStr
+from pydantic import EmailStr, PositiveInt, SecretStr
 from toolkit.config import base
 from toolkit.types_app import NonEmptyStr
 
@@ -19,10 +19,11 @@ class AuthSettings(base.BaseConf):
     ALL_USERS: NonEmptyStr = "__Для всех пользователей:__ "
 
     # Authentication settings
-    # admin_email: EmailStr = "adm@adm.com"
-    # admin_password: SecretStr = "adm"
-    # password_length: PositiveInt = 3
-    # auth_backend_name: str = "jwt"
+    EMAIL: EmailStr = "admin@admin.com"
+    PASSWORD: SecretStr = "admin_pwd"
+    FIRST_NAME: str = "admin"
+    LAST_NAME: str = "admin"
+    PHONE_NUMBER: str = "+79991112233"
 
 
 auth_conf = AuthSettings()

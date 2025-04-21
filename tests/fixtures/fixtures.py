@@ -7,7 +7,7 @@ import pytest_asyncio
 from httpx import AsyncClient
 
 from src.config import db_config, testdb_config
-from src.fastapi.main import app
+from src.main import app
 
 
 @pytest_asyncio.fixture(scope="session")

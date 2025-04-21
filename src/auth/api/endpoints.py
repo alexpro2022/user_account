@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status
 
 from ..config import auth_conf
-from ..dependencies import authenticated_user
-from ..schemas.token import Token
+from ..schemas import Token
 from ..services.token import create_access_token
+from .dependencies import authenticated_user
 
 router = APIRouter(
     prefix=auth_conf.TOKEN_URL,

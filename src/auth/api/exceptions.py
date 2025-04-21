@@ -2,6 +2,11 @@ from functools import partial
 
 from fastapi import HTTPException, status
 
+AdminAccessOnly = HTTPException(
+    status_code=status.HTTP_403_FORBIDDEN,
+    detail="Admin access only",
+)
+
 exception_401 = partial(
     HTTPException,
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -15,8 +20,4 @@ ExpiredToken = exception_401(
 )
 IncorrectLoginCredentials = exception_401(
     detail="Incorrect email or password",
-)
-AdminAccessOnly = HTTPException(
-    status_code=status.HTTP_403_FORBIDDEN,
-    detail="Admin access only",
 )

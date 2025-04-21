@@ -1,7 +1,7 @@
 from toolkit.test_tools import Data
 
-from src.auth_user.models import Role, User
-from src.auth_user.services.password import hash_pwd
+from src.auth.services.password import hash_pwd
+from src.models.user import Role, User
 
 
 class _Data(Data):

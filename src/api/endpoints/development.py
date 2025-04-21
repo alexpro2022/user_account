@@ -3,13 +3,12 @@ The endpoints are not a part of the project.
 They are just for convenient checking on development.
 """
 
+from fastapi import APIRouter
 from toolkit.api.fastapi.dependencies import async_session
 
-from fastapi import APIRouter
-from src.services import service
-
-from ..models import User
-from ..schemas import user
+from src.models.user import User
+from src.schemas import user
+from src.services import standard_fastapi as service
 
 router = APIRouter(
     prefix="/auth/development",
@@ -32,5 +31,5 @@ router = APIRouter(
     description="The endpoint is just for convenient users checking on development.",
     response_model=list[user.User],
 )
-async def get_users(session: async_session):
+async def get_users_development(session: async_session):
     return await service.get_all(session, User)

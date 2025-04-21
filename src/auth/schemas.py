@@ -4,6 +4,11 @@ from pydantic import BaseModel, EmailStr
 from toolkit.types_app import NonEmptyStr
 
 
+class UserLoginForm(BaseModel):
+    username: EmailStr
+    password: NonEmptyStr
+
+
 class Token(BaseModel):
     # The fields are mandatory as per OAuth2 spec
     access_token: NonEmptyStr

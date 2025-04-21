@@ -1,7 +1,7 @@
+from fastapi import status
 from toolkit.test_tools.base_test_fastapi import HTTPMethod
 
-from fastapi import status
-from src.auth_user.endpoints import admin, user
+from src.api.endpoints import admin, user
 from tests.fixtures.testtools import BaseTest_API
 from tests.integration_tests.utils import PathParamMixin
 

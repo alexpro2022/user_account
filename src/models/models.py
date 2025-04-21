@@ -1,7 +1,7 @@
 from toolkit.models.base import Base, Mapped
 from toolkit.types_app import TypePK
 
-from src.auth_user.models import User
+from src.models.user import User
 
 
 class Account(Base):
