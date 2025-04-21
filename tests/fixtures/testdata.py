@@ -1,7 +1,7 @@
 from toolkit.test_tools import Data
 
 from src.auth.services.password import hash_pwd
-from src.models.user import Role, User
+from src.models.user import User
 
 
 class _Data(Data):
@@ -23,27 +23,24 @@ class _Data(Data):
         return dict(
             id=str(self.item_uuid),
             email=self.create_data["email"],
-            full_name=f"{self.create_data['first_name']} {self.create_data['last_name']}",
+            full_name=f"{self.create_data.get('first_name')} {self.create_data.get('last_name')}",
         )
 
 
+# The data is also used in model and crud tests
 USER_TEST_DATA = _Data(
     password="user_pwd",
-    create_data={
-        "email": "user@user.com",
-        "first_name": "user_name",
-        "last_name": "user_surname",
-        "phone_number": "+79211234567",
-        "role": Role.USER,
-    },
+    create_data={"email": "user@user.com"},  # password is added in constructor
     update_data={  # email and password are excluded from update schema
         "first_name": "alex",
         "last_name": "prosk",
         "phone_number": "+79213452402",
-        "role": Role.ADMIN,
+        "admin": True,
     },
     unique_fields=["email"],
     indexed_fields=["email"],
+    default_data={"admin": False},
+    nullable_fields=["first_name", "last_name", "phone_number"],
 )
 
 
@@ -54,7 +51,7 @@ ADMIN_TEST_DATA = _Data(
         "first_name": "admin_name",
         "last_name": "admin_surname",
         "phone_number": "+79217778899",
-        "role": Role.ADMIN,
+        "admin": True,
     },
     update_data={  # email and password are excluded from update schema
         "first_name": "alex",

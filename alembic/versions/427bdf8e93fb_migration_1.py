@@ -1,8 +1,8 @@
 """migration №1
 
-Revision ID: dcd4363b06a8
+Revision ID: 427bdf8e93fb
 Revises:
-Create Date: 2025-04-19 17:49:22.816450
+Create Date: 2025-04-21 23:01:18.220193
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "dcd4363b06a8"
+revision: str = "427bdf8e93fb"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -25,10 +25,10 @@ def upgrade() -> None:
         "user",
         sa.Column("email", sa.String(), nullable=False),
         sa.Column("hashed_pwd", sa.String(), nullable=False),
-        sa.Column("first_name", sa.String(), nullable=False),
-        sa.Column("last_name", sa.String(), nullable=False),
-        sa.Column("phone_number", sa.String(), nullable=False),
-        sa.Column("role", sa.Enum("ADMIN", "USER", name="role"), nullable=False),
+        sa.Column("first_name", sa.String(), nullable=True),
+        sa.Column("last_name", sa.String(), nullable=True),
+        sa.Column("phone_number", sa.String(), nullable=True),
+        sa.Column("admin", sa.Boolean(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_user")),
     )

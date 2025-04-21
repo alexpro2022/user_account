@@ -16,20 +16,11 @@ router = APIRouter(
 )
 
 
-# @router.get(
-#     "/roles",
-#     summary="All role records.",
-#     description="The endpoint is just for convenient roles checking on development.",
-# )
-# async def get_roles(session: async_session):
-#     return await service.get_all(session, Role)
-
-
 @router.get(
     "/users",
     summary="All user records.",
     description="The endpoint is just for convenient users checking on development.",
-    response_model=list[user.User],
+    response_model=list[user.DevUser],
 )
 async def get_users_development(session: async_session):
     return await service.get_all(session, User)

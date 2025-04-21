@@ -45,7 +45,7 @@ current_user = Annotated[
 
 
 def get_admin(user: current_user):
-    if user.is_admin:
+    if user.admin:
         return user
     raise AdminAccessOnly
 
