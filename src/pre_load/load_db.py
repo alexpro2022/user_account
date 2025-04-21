@@ -7,6 +7,8 @@ from src.auth.services.password import hash_pwd
 from src.models.user import User
 from src.services import standard as service
 
+from .models import UserFactory
+
 ADMIN_PK = "43e0231a-9756-43bb-b9dc-f43567aa5010"
 USER_PK = "43e0231a-9756-43bb-b9dc-f43567aa5011"
 
@@ -31,5 +33,6 @@ async def create_admin():
 
 
 async def load_db():
-    await try_load(create_admin)
-    await try_load
+    await try_load(create_admin())
+    for user in UserFactory.build_batch(size=3):
+        await service.create_obj(user)

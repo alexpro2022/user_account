@@ -20,6 +20,11 @@ async def create(model: TypeModel, **create_data) -> TypeModel:
         return await crud.create(session, model(**create_data))
 
 
+async def create_obj(obj) -> TypeModel:
+    async with async_session.begin() as session:
+        return await crud.create(session, obj)
+
+
 async def update(model: TypeModel, id: TypePK, **update_data) -> TypeModel:
     async with async_session.begin() as session:
         return await crud.update(session, model, id, **update_data)

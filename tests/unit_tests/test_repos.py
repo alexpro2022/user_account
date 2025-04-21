@@ -1,4 +1,3 @@
-import pytest
 from toolkit.test_tools import BaseTest_CRUD, BaseTest_Model
 
 from tests.fixtures.testdata import USER_TEST_DATA
@@ -6,9 +5,6 @@ from tests.fixtures.testdata import USER_TEST_DATA
 
 class Test_UserModel(BaseTest_Model):
     data = USER_TEST_DATA
-
-    @pytest.mark.skip(reason="<Role.USER: 'USER'> cannot be used in eval(repr(obj))")
-    def test__repr(self, obj): ...  # noqa
 
 
 class Test_UserCRUD(BaseTest_CRUD):
