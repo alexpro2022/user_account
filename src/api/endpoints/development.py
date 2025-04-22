@@ -7,8 +7,8 @@ from fastapi import APIRouter
 from toolkit.api.fastapi.dependencies import async_session
 
 from src.models.user import Account, Payment, User
+from src.n_toolkit.services import db_service as service
 from src.schemas import user
-from src.services import standard_fastapi as service
 
 router = APIRouter(
     prefix="/auth/development",

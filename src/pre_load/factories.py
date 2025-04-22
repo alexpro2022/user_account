@@ -16,10 +16,11 @@ class UserFactory(f.Factory):
 
     # first_name = fake("first_name")
     # email = fake("email")
-    first_name = f.Sequence(lambda n: f"Name_{n}")
+    first_name = f.Sequence(lambda n: f"User_{n}")
     email = f.LazyAttribute(lambda self: f"{self.first_name.lower()}@example.com")
-    hashed_pwd = hash_pwd(str(fake("password")))
-    last_name = fake("last_name")
+    password = f.LazyAttribute(lambda self: hash_pwd(f"{self.first_name.lower()}_pwd"))
+    # fake("password")
+    last_name = fake("Last_name")
     phone_number = fake("msisdn")
 
 

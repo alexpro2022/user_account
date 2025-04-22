@@ -1,6 +1,8 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr
+
+from src.auth.services.password import hash_pwd
 
 
 class Me(Base):
@@ -15,11 +17,6 @@ class UserUpdate(BaseModel):
     admin: bool | None = None
 
 
-class UserCreate(UserUpdate, Base):
-    email: EmailStr
-    password: NonEmptyStr
-
-
 class UserOut(UserUpdate, Base):
     email: EmailStr
     admin: bool
@@ -27,3 +24,13 @@ class UserOut(UserUpdate, Base):
 
 class DevUser(UserOut):
     hashed_pwd: NonEmptyStr
+
+
+class UserCreate(UserUpdate, Base):
+    email: EmailStr
+    password: NonEmptyStr
+
+    @field_validator("password", mode="after")
+    @classmethod
+    def hash_password(cls, password: str) -> str:
+        return hash_pwd(password)

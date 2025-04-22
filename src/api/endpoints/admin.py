@@ -10,11 +10,10 @@ from toolkit.types_app import TypePK
 
 from src.auth.api.dependencies import admin_access_only
 from src.auth.config import auth_conf
-from src.auth.services.password import hash_password
 from src.config import app_conf
 from src.models.user import User
+from src.n_toolkit.services import db_service
 from src.schemas import user as schemas
-from src.services import standard_fastapi as service
 
 _description = dict(description=auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)
@@ -39,7 +38,7 @@ router = APIRouter(
     response_model=list[schemas.UserOut],
 )
 async def get_users(session: async_session):
-    return await service.get_all(session, User)
+    return await db_service.get_all(session=session, model=User)
 
 
 @router.post(
@@ -50,10 +49,16 @@ async def get_users(session: async_session):
     responses=response_400_already_exists("user"),
     status_code=status.HTTP_201_CREATED,
 )
-async def create_user(session: async_session, user: schemas.UserCreate):
-    create_data = hash_password(user.model_dump())
+async def create_user(
+    session: async_session,
+    create_data: schemas.UserCreate,
+):
     return await try_return(
-        return_coro=service.create(session, User, **create_data),
+        return_coro=db_service.create(
+            session=session,
+            entity=User,
+            **create_data.model_dump(exclude_none=True),
+        ),
         possible_exception=AlreadyExists,
         raise_status_code=status.HTTP_400_BAD_REQUEST,
     )
@@ -64,8 +69,17 @@ async def create_user(session: async_session, user: schemas.UserCreate):
     summary="get user",
     **_common,
 )
-async def get_user(session: async_session, user_id: TypePK):
-    return await try_return(return_coro=service.get(session, User, id=user_id))
+async def get_user(
+    session: async_session,
+    user_id: TypePK,
+):
+    return await try_return(
+        return_coro=db_service.get(
+            session=session,
+            model=User,
+            id=user_id,
+        )
+    )
 
 
 @router.delete(
@@ -73,8 +87,17 @@ async def get_user(session: async_session, user_id: TypePK):
     summary="delete user",
     **_common,
 )
-async def delete_user(session: async_session, user_id: TypePK):
-    return await try_return(return_coro=service.delete(session, User, user_id))
+async def delete_user(
+    session: async_session,
+    user_id: TypePK,
+):
+    return await try_return(
+        return_coro=db_service.delete(
+            session=session,
+            model=User,
+            id=user_id,
+        )
+    )
 
 
 @router.patch(
@@ -83,10 +106,15 @@ async def delete_user(session: async_session, user_id: TypePK):
     **_common,
 )
 async def update_user(
-    session: async_session, user_id: TypePK, user: schemas.UserUpdate
+    session: async_session,
+    user_id: TypePK,
+    update_data: schemas.UserUpdate,
 ):
     return await try_return(
-        return_coro=service.update(
-            session, User, user_id, **user.model_dump(exclude_none=True)
+        return_coro=db_service.update(
+            session=session,
+            model=User,
+            id=user_id,
+            **update_data.model_dump(exclude_none=True),
         )
     )

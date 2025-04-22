@@ -11,7 +11,7 @@ NotRequiredStr: TypeAlias = str | None
 
 class User(Base):
     email: Mapped[str] = mapped_column(unique=True, index=True)
-    hashed_pwd: Mapped[str]
+    password: Mapped[str]
     first_name: Mapped[NotRequiredStr]
     last_name: Mapped[NotRequiredStr]
     phone_number: Mapped[NotRequiredStr]
