@@ -10,18 +10,19 @@ from toolkit.types_app import TypePK
 
 from src.auth.api.dependencies import admin_access_only
 from src.auth.config import auth_conf
-from src.auth.services.password import hash_password
 from src.config import app_conf
 from src.models.user import User
+from src.n_toolkit.services import db_service
 from src.schemas import user as schemas
-from src.services import standard_fastapi as service
+from src.services import user as service
 
 _description = dict(description=auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)
+_response_404 = dict(responses=response_404("user"))
 _common = {
     **_description,
     **_response_model,
-    **dict(responses=response_404("user")),
+    **_response_404,
 }
 
 router = APIRouter(
@@ -32,61 +33,86 @@ router = APIRouter(
 )
 
 
-@router.get(
-    "",
-    summary="All user records.",
-    **_description,
-    response_model=list[schemas.UserOut],
-)
-async def get_users(session: async_session):
-    return await service.get_all(session, User)
-
-
 @router.post(
     "",
-    summary="create user",
+    summary="Create user",
     **_description,
     **_response_model,
     responses=response_400_already_exists("user"),
     status_code=status.HTTP_201_CREATED,
 )
-async def create_user(session: async_session, user: schemas.UserCreate):
-    create_data = hash_password(user.model_dump())
+async def create_user(
+    session: async_session,
+    create_data: schemas.UserCreate,
+):
     return await try_return(
-        return_coro=service.create(session, User, **create_data),
+        return_coro=db_service.create(
+            session=session,
+            entity=User,
+            **create_data.model_dump(exclude_none=True),
+        ),
         possible_exception=AlreadyExists,
         raise_status_code=status.HTTP_400_BAD_REQUEST,
     )
 
 
-@router.get(
+@router.patch(
     "/{user_id}",
-    summary="get user",
+    summary="Update user",
     **_common,
 )
-async def get_user(session: async_session, user_id: TypePK):
-    return await try_return(return_coro=service.get(session, User, id=user_id))
+async def update_user(
+    session: async_session,
+    user_id: TypePK,
+    update_data: schemas.UserUpdate,
+):
+    return await try_return(
+        return_coro=db_service.update(
+            session=session,
+            model=User,
+            id=user_id,
+            **update_data.model_dump(exclude_none=True),
+        )
+    )
 
 
 @router.delete(
     "/{user_id}",
-    summary="delete user",
+    summary="Delete user",
     **_common,
 )
-async def delete_user(session: async_session, user_id: TypePK):
-    return await try_return(return_coro=service.delete(session, User, user_id))
-
-
-@router.patch(
-    "/{user_id}",
-    summary="delete user",
-    **_common,
-)
-async def update_user(
-    session: async_session, user_id: TypePK, user: schemas.UserUpdate
+async def delete_user(
+    session: async_session,
+    user_id: TypePK,
 ):
     return await try_return(
-        return_coro=service.update(
-            session, User, user_id, **user.model_dump(exclude_none=True)
+        return_coro=db_service.delete(
+            session=session,
+            model=User,
+            id=user_id,
         )
     )
+
+
+@router.get(
+    "",
+    summary="All users short list",
+    **_description,
+    response_model=list[schemas.UserOut],
+)
+async def get_users(session: async_session):
+    return await db_service.get_all(session=session, model=User)
+
+
+@router.get(
+    "/{user_id}",
+    summary="User's accounts",
+    **_description,
+    **_response_404,
+    response_model=schemas.UserAccounts,
+)
+async def get_user(
+    session: async_session,
+    user_id: TypePK,
+):
+    return await try_return(return_coro=service.get_user_accounts(session, user_id))

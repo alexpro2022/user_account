@@ -16,6 +16,7 @@ dependencies = [
 "pyjwt",
 "passlib[bcrypt]",
 "python-multipart",
+"factory_boy",
 ]
 
 

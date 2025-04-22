@@ -17,7 +17,7 @@ async def authenticate_user(
         user: User = await crud.get_one(session, User, email=data.username)
     except exceptions.NotFound:
         raise IncorrectLoginCredentials
-    if not verify_password(data.password, user.hashed_pwd):
+    if not verify_password(data.password, user.password):
         raise IncorrectLoginCredentials
     return user
 
