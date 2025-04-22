@@ -3,11 +3,21 @@ from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr
 
 from src.auth.services.password import hash_password
+from src.schemas.account import AccountsMixin
+from src.schemas.payment import PaymentsMixin
 
 
 class Me(Base):
     email: EmailStr
     full_name: NonEmptyStr
+
+
+class MeAccounts(AccountsMixin, Me):
+    pass
+
+
+class MePayments(PaymentsMixin, Me):
+    pass
 
 
 class UserUpdate(BaseModel):
@@ -22,8 +32,8 @@ class UserOut(UserUpdate, Base):
     admin: bool
 
 
-class DevUser(UserOut):
-    password: NonEmptyStr
+class UserAccounts(AccountsMixin, UserOut):
+    pass
 
 
 class UserCreate(UserUpdate, Base):

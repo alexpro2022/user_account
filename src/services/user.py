@@ -1,15 +1,23 @@
-# from src.n_toolkit.services import db_service
-# from toolkit.types_app import _AS
-# from src.auth.services.password import hash_pwd
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
+from toolkit.types_app import _AS, TypePK
+
+from src.models.user import User
 
 
-# async def hash_and_create(
-#     *,
-#     session: _AS | None = None,
-#     obj: object,
-# ):
-#     obj.hashed_pwd = hash_pwd(obj.hashed_pwd)
-#     return await db_service.create(
-#         session=session,
-#         entity=obj,
-#     )
+async def get_user_accounts(session: _AS, user_id: TypePK):
+    return (
+        (
+            await session.scalars(
+                statement=select(User)
+                .filter_by(id=user_id)
+                .options(joinedload(User.accounts))
+            )
+        )
+        .unique()
+        .one()
+    )
+
+
+async def get_user_payments(session: _AS, user_id: TypePK):
+    pass

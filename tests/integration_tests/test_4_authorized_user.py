@@ -3,6 +3,7 @@ from toolkit.test_tools.base_test_fastapi import HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
 from src.api.endpoints import admin, user
+from src.schemas import user as schema
 from tests.fixtures.testdata import USER_TEST_DATA
 from tests.fixtures.testtools import BaseTest_API
 from tests.integration_tests.utils import PathParamMixin
@@ -13,15 +14,26 @@ class LoggedInUser(DBMixin, BaseTest_API):
     login_data = USER_TEST_DATA.get_login_data()
 
 
+class Test_AuthGetMe(LoggedInUser):
+    http_method = HTTPMethod.GET
+    expected_response_model = schema.Me
+    path_func = user.get_me
+    expected_response_json = USER_TEST_DATA.get_expected_me_data()
+
+
+class Test_AuthGetMeAccounts(LoggedInUser):
+    http_method = HTTPMethod.GET
+    path_func = user.get_me_accounts
+    expected_response_model = schema.MeAccounts
+    expected_response_json = {
+        **USER_TEST_DATA.get_expected_me_data(),
+        "accounts": [],
+    }
+
+
 class Forbidden(LoggedInUser):
     expected_status_code = status.HTTP_403_FORBIDDEN
     expected_response_json = {"detail": "Admin access only"}
-
-
-class Test_AuthGetMe(LoggedInUser):
-    http_method = HTTPMethod.GET
-    path_func = user.get_me
-    expected_response_json = USER_TEST_DATA.get_expected_me_data()
 
 
 class Test_AuthGetAllRecords(Forbidden):
