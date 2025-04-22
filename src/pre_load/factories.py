@@ -2,7 +2,7 @@ from random import randint
 
 import factory as f
 
-from src.auth.services.password import hash_pwd
+from src.auth.services.password import hash_password
 from src.models import Account, Payment, User
 
 fake = f.Faker
@@ -18,9 +18,11 @@ class UserFactory(f.Factory):
     # email = fake("email")
     first_name = f.Sequence(lambda n: f"User_{n}")
     email = f.LazyAttribute(lambda self: f"{self.first_name.lower()}@example.com")
-    password = f.LazyAttribute(lambda self: hash_pwd(f"{self.first_name.lower()}_pwd"))
+    password = f.LazyAttribute(
+        lambda self: hash_password(f"{self.first_name.lower()}_pwd")
+    )
     # fake("password")
-    last_name = fake("Last_name")
+    last_name = fake("last_name")
     phone_number = fake("msisdn")
 
 

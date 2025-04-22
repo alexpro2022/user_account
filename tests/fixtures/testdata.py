@@ -1,14 +1,13 @@
 from toolkit.test_tools import Data
 
-from src.auth.services.password import hash_pwd
+from src.auth.services.password import hash_password
 from src.models.user import User
 
 
 class _Data(Data):
     def __init__(self, password: str, **kwargs):
         self.password = password
-        kwargs["create_data"]["password"] = hash_pwd(self.password)
-        # kwargs["create_data"]["hashed_pwd"] = self.password
+        kwargs["create_data"]["password"] = hash_password(self.password)
         kwargs["model"] = User
         super().__init__(**kwargs)
         self.expected_response_json_create.pop("password")

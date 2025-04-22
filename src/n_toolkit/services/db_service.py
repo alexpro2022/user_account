@@ -33,8 +33,8 @@ async def create(
     **create_data,
 ) -> TypeModel:
     if session is None:
-        return await service_session_independant.create(entity(**create_data))
-    return await service_session_dependant.create(session, entity(**create_data))
+        return await service_session_independant.create(entity, **create_data)
+    return await service_session_dependant.create(session, entity, **create_data)
 
 
 async def update(

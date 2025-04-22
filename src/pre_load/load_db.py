@@ -4,7 +4,7 @@ from collections.abc import Coroutine
 from toolkit.repo.db.exceptions import AlreadyExists
 
 from src.auth.config import auth_conf
-from src.auth.services.password import hash_pwd
+from src.auth.services.password import hash_password
 from src.models.user import User
 
 # from src.services import user as user_service
@@ -31,13 +31,14 @@ async def try_load(coro: Coroutine):
 
 async def create_admin():
     return await db_service.create(
-        User,
-        email=auth_conf.EMAIL,
-        password=hash_pwd(auth_conf.PASSWORD.get_secret_value()),
-        first_name=auth_conf.FIRST_NAME,
-        last_name=auth_conf.LAST_NAME,
-        phone_number=auth_conf.PHONE_NUMBER,
-        admin=True,
+        entity=User(
+            email=auth_conf.EMAIL,
+            password=hash_password(auth_conf.PASSWORD.get_secret_value()),
+            first_name=auth_conf.FIRST_NAME,
+            last_name=auth_conf.LAST_NAME,
+            phone_number=auth_conf.PHONE_NUMBER,
+            admin=True,
+        )
     )
 
 

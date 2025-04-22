@@ -7,7 +7,7 @@ from fastapi import APIRouter
 from toolkit.api.fastapi.dependencies import async_session
 
 from src.models.user import Account, Payment, User
-from src.n_toolkit.services import db_service as service
+from src.n_toolkit.services import db_service
 from src.schemas import user
 
 router = APIRouter(
@@ -23,7 +23,7 @@ router = APIRouter(
     response_model=list[user.DevUser],
 )
 async def get_users_development(session: async_session):
-    return await service.get_all(session, User)
+    return await db_service.get_all(session=session, model=User)
 
 
 @router.get(
@@ -33,7 +33,7 @@ async def get_users_development(session: async_session):
     # response_model=list[user.DevUser],
 )
 async def get_accounts_development(session: async_session):
-    return await service.get_all(session, Account)
+    return await db_service.get_all(session=session, model=Account)
 
 
 @router.get(
@@ -43,4 +43,4 @@ async def get_accounts_development(session: async_session):
     # response_model=list[user.DevUser],
 )
 async def get_paymentss_development(session: async_session):
-    return await service.get_all(session, Payment)
+    return await db_service.get_all(session=session, model=Payment)
