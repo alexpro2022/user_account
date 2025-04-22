@@ -1,8 +1,8 @@
 """migration №1
 
-Revision ID: 98dd87e335c1
+Revision ID: 7226808cd539
 Revises:
-Create Date: 2025-04-22 06:36:48.726356
+Create Date: 2025-04-22 07:17:20.483002
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "98dd87e335c1"
+revision: str = "7226808cd539"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None

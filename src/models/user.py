@@ -30,7 +30,7 @@ class User(Base):
 class Account(Base):
     user_id: Mapped[TypePK] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = orm.relationship(back_populates="accounts")
-    balance: Mapped[CurrencyType]
+    balance: Mapped[CurrencyType] = mapped_column(default=0)
     payments: Mapped[list["Payment"]] = orm.relationship(
         back_populates="account",
         cascade="all, delete-orphan",
