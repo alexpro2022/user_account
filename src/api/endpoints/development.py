@@ -9,8 +9,6 @@ from toolkit.types_app import TypePK
 
 from src.services import account_service, payment_service, user_service
 
-# get_user_accounts, get_user_payments
-
 router = APIRouter(
     prefix="/auth/development",
     tags=["Auth Development"],
@@ -22,7 +20,7 @@ router = APIRouter(
     summary="All users.",
 )
 async def get_users_development(session: async_session):
-    return await user_service.get_all(session=session)  # , model=User)
+    return await user_service.get_all(session=session)
 
 
 @router.get(
@@ -30,7 +28,7 @@ async def get_users_development(session: async_session):
     summary="All accounts.",
 )
 async def get_accounts_development(session: async_session):
-    return await account_service.get_all(session=session)  # , model=Account)
+    return await account_service.get_all(session=session)
 
 
 @router.get(
@@ -38,13 +36,12 @@ async def get_accounts_development(session: async_session):
     summary="All payments.",
 )
 async def get_paymentss_development(session: async_session):
-    return await payment_service.get_all(session=session)  # , model=Payment)
+    return await payment_service.get_all(session=session)
 
 
 @router.get(
     "/accounts/{user_id}",
     summary="User's accounts ",
-    # response_model=user.UserAccounts,
 )
 async def get_user_accounts_development(
     session: async_session,
@@ -56,7 +53,6 @@ async def get_user_accounts_development(
 @router.get(
     "/payments/{user_id}",
     summary="User's payments",
-    # response_model=user.UserAccounts,
 )
 async def get_user_payments_development(
     session: async_session,

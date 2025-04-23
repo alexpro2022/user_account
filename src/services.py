@@ -2,16 +2,53 @@ import sqlalchemy as sa
 from toolkit.types_app import _AS, TypePK
 
 from src.auth.services.password import hash_password
-from src.models import Account, Payment, User
+from src.models import Account, CurrencyType, Payment, User
 from src.n_toolkit.services.db_service import DBService
 
 
 class AccountService(DBService):
     model = Account
 
+    async def update_balance(
+        self,
+        *,
+        session: _AS | None = None,
+        id: TypePK,
+        amount: CurrencyType,
+    ):
+        # TODO: optimize
+        obj: Account = await self.get(session=session, id=id)
+        await self.update(session=session, id=id, balance=obj.balance + amount)
+
+
+account_service = AccountService()
+
 
 class PaymentService(DBService):
     model = Payment
+
+    async def create(
+        self,
+        *,
+        session: _AS | None = None,
+        obj: Payment | None = None,
+        **create_data,
+    ):
+        # from toolkit.config.db_config import async_session
+        # async def transact(session):
+        #     await account_service.update_balance(session=session, id=obj.account_id, amount=obj.amount)
+        #     return await super().create(session=session, obj=obj)
+
+        if obj is None:
+            obj = Payment(**create_data)
+        # if session is not None:
+        #     return await transact(session)
+        # async with async_session.begin() as session:
+        #     return await transact(session)
+        await account_service.update_balance(
+            session=session, id=obj.account_id, amount=obj.amount
+        )
+        return await super().create(session=session, obj=obj)
 
 
 class UserService(DBService):
@@ -21,14 +58,13 @@ class UserService(DBService):
         self,
         *,
         session: _AS | None = None,
-        obj: object | None = None,
+        obj: User | None = None,
         **create_data,
     ):
-        if obj is not None:
-            obj.password = hash_password(obj.password)
-        elif create_data:
-            create_data["password"] = hash_password(create_data["password"])
-        return await super().create(session=session, obj=obj, **create_data)
+        if obj is None:
+            obj = User(**create_data)
+        obj.password = hash_password(obj.password)
+        return await super().create(session=session, obj=obj)
 
     async def get_user_accounts(self, session: _AS, user_id: TypePK):
         user_accounts = sa.select(Account).where(Account.user_id == user_id)
@@ -42,6 +78,5 @@ class UserService(DBService):
         return (await session.scalars(user_payments)).all()
 
 
-account_service = AccountService()
 payment_service = PaymentService()
 user_service = UserService()
