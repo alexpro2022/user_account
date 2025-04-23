@@ -1,43 +1,68 @@
 # PROJECT_NAME
 
-[![Test Suite](https://github.com/alexpro2022/infra-template/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/infra-template/actions/workflows/flow_branch_test.yaml)
-
-===== TO BE REMOVED =====
-
-cp -a toolkit/=new_proj_template/. .
-cp .env.example .env
+[![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
 
 
-- CI/CD: test-build-push-deploy
-- Docker: centralized, development and testing
-- DB: Postgres, version on choice (via .env)
-- Config: centralized, from .env file
-- Requirements: centrilized, to update:
-    * requirements.txt according to app stack
-- Backend: Any (here simple FastAPI), code in /src, to update:
-    * api/
-    * app.py (main.py)
-- Sevice: , part of App, to update:
-    * service.py
-- Repository: standard crud, part of App, to update:
-    * models.py
-- ORM: SQLAlchemy, to make migration, see alembic/env.py
-- Tests: to update the following files:
-    * unit_tests/test_models/test_models.py
-    * integration_tests/ except utils.py
+#### Необходимо реализовать работу со следующими сущностями:
+  ☑ Пользователь<br>
+  ☑ Администратор<br>
+  ☑ Счет - имеет баланс, привязан к пользователю<br>
+  ☑ Платеж(пополнение баланса) - хранит уникальный идентификатор и сумму пополнения счета пользователя<br>
 
-CREATING APP STEPS:
+#### Пользователь должен иметь следующие возможности:
+  ☑ Авторизоваться по email/password<br>
+  ☑ Получить данные о себе(id, email, full_name)<br>
+  ☑ Получить список своих счетов и балансов<br>
+  ☑ Получить список своих платежей<br>
 
-General:
-- Clone infra-template from GH
-- Adjust Readme.md Tech stack
-- Adjust .env and .env.example
-- Adjust requirements.txt
+#### Администратор должен иметь следующие возможности:
+  ☑ Авторизоваться по email/password<br>
+  ☑ Получить данные о себе (id, email, full_name)<br>
+  ☑ Создать/Удалить/Обновить пользователя<br>
+  ☑ Получить список пользователей<br>
+  ☑ Получить список счетов пользователя с балансами<br>
 
-==============================================
+#### При обработке вебхука необходимо:
+  Проверить подпись объекта<br>
+  Проверить существует ли у пользователя такой счет - если нет, его необходимо создать<br>
+  ☑ Сохранить транзакцию в базе данных<br>
+  ☑ Начислить сумму транзакции на счет пользователя<br>
 
-1. bages here
-2. short description here
+
+
+## Создание и редактирование пользователей:
+
+  #### Администратор создается при первом запуске по учетным данным из **.env**-файла, по умолчанию:
+  ```bash
+  EMAIL=admin@admin.com
+  PASSWORD=admin_pwd
+  FIRST_NAME=admin
+  LAST_NAME=admin
+  PHONE_NUMBER=+79991112233
+  ```
+
+  #### Пользователь может быть создан с любыми правами.
+  - Данные для создания:
+  ```json
+  {
+    "email": "user@user.com",
+    "password": "user_pwd",
+    "first_name": "user_name",
+    "last_name": "user_surname",
+    "phone_number": "+79211234567",
+    "role": "USER"
+  }
+  ```
+  - и редактирования:
+
+  ```json
+  {
+    "first_name": "alex",
+    "last_name": "pro",
+    "phone_number": "+79213452402",
+    "role": "ADMIN"
+  }
+  ```
 
 <br>
 

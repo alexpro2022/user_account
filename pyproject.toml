@@ -3,7 +3,6 @@ name = "user-account"
 version = "0.0.0"
 dependencies = [
 "fastapi",
-# fastapi-cli
 # fastapi-users[sqlalchemy]
 "app-toolkit-package",
 "pydantic[email]",
@@ -14,7 +13,10 @@ dependencies = [
 "redis",
 "SQLAlchemy",
 "uvicorn[standard]",
-"cryptography",
+"pyjwt",
+"passlib[bcrypt]",
+"python-multipart",
+"factory_boy",
 ]
 
 
@@ -49,9 +51,9 @@ pythonpath = [
 ]
 addopts = "-vx -p no:cacheprovider --cov-report term-missing --cov=src"  # -s -W ignore --disable-pytest-warnings
 testpaths = [
+    "tests/fixtures",
     "tests/unit_tests",
-    "tests/fastapi_tests",
-    "tests/bot_tests",
+    "tests/integration_tests",
 ]
 python_files = [
     "test_*.py",

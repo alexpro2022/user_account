@@ -5,6 +5,7 @@ from toolkit.test_tools import (
 )
 
 from src import config
+from src.auth import config as auth_config
 
 
 class Test_AppConfig(BaseTest_Config):
@@ -12,6 +13,14 @@ class Test_AppConfig(BaseTest_Config):
     conf_name = "app_conf"
     conf_fields = {
         "url_prefix": "/api/v1",
+    }
+
+
+class Test_AuthConfig(BaseTest_Config):
+    module = auth_config
+    conf_name = "auth_conf"
+    conf_fields = {
+        "TOKEN_URL": "/auth/jwt/login",
     }
 
 

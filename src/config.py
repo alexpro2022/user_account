@@ -1,4 +1,3 @@
-from pydantic import PositiveInt, SecretStr
 from toolkit.config import (  # noqa
     app_config,
     cache_config,
@@ -8,8 +7,8 @@ from toolkit.config import (  # noqa
 
 
 class SettingsApp(app_config.SettingsApp):
-    secret_min_ttl: PositiveInt = 5 * 60
-    secret_key: SecretStr = "wxvQEAtuRjtCHpeL9VPvy7SLVAQHZhlp-Pswcp7RCyw="
+    app_title: str = "Сервис платежей."
+    app_description: str = "Описание сервиса платежей"
 
 
 app_conf = SettingsApp()
