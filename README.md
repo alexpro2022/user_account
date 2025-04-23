@@ -20,6 +20,7 @@ http://185.221.162.231:8001<br>
 
 ![alt text](images/credentials.png)
 
+<h1></h1>
 </details>
 
 
@@ -61,8 +62,7 @@ http://185.221.162.231:8001<br>
 [![pre-commit](https://img.shields.io/badge/-pre--commit-464646?logo=pre-commit)](https://pre-commit.com/)
 [![toolkit](https://img.shields.io/badge/-toolkit-464646?logo=python)](https://pypi.org/project/app-toolkit-package/)
 
-[⬆️Оглавление](#оглавление)
-
+<h1></h1>
 </details>
 <br>
 
@@ -95,7 +95,7 @@ http://185.221.162.231:8001<br>
 
 
 
-## Создание и редактирование пользователей, счетов и платежей:
+### Создание и редактирование пользователей, счетов и платежей:
 
 #### Администратор создается при первом запуске приложения по учетным данным из **.env**-файла, по умолчанию:
   ```bash
@@ -163,6 +163,7 @@ nano .env
    ```bash
    docker -v && docker compose version
    ```
+   <h1></h1>
    </details>
 <br>
 
