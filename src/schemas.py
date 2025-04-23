@@ -2,6 +2,8 @@ from pydantic import BaseModel, EmailStr
 from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr, TypePK
 
+from src.config import app_conf
+
 # from src.auth.services.password import hash_password
 from src.models import CurrencyType
 
@@ -12,6 +14,9 @@ class Transaction(BaseModel):
     account_id: TypePK
     amount: CurrencyType
     signature: NonEmptyStr
+
+    def get_string(self, secret_key: str = app_conf.secret_key):
+        return f"{self.account_id}{self.amount}{self.transaction_id}{self.user_id}{secret_key}"
 
 
 class Payment(Base):

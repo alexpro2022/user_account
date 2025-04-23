@@ -78,7 +78,6 @@ class PaymentService(DBService):
         \n  * Сохранить транзакцию в базе данных
         \n  * Начислить сумму транзакции на счет пользователя
         """
-        # check(payload.signature)
         await account_service.get_or_create(
             session=session,
             account_id=transaction.account_id,
@@ -122,45 +121,3 @@ class UserService(DBService):
 
 payment_service = PaymentService()
 user_service = UserService()
-
-# import base64
-# import hashlib
-# import hmac
-
-# # ===========================================================================
-# from src.config import app_conf
-
-
-# def verify_webhook(actual, expected):
-#     digest = hmac.new(
-#         app_conf.secret_key.get_secret_value().encode("utf-8"),
-#         data,
-#         digestmod=hashlib.sha256,
-#     ).digest()
-#     computed_hmac = base64.b64encode(digest)
-
-#     return hmac.compare_digest(
-#         actual,
-#         expected,
-#     )
-
-
-# def check_signature(transaction: schemas.Transaction):
-#     def encode(t: schemas.Transaction):
-#         (f"{t.account_id}{t.amount}{t.transaction_id}{t.user_id}{app_conf.secret_key}")
-
-#     assert transaction.signature == encode(transaction)
-#     """
-#     signature должна формироваться через SHA256 хеш для строки состоящей из
-#     конкатенации значений объекта в алфавитном порядке ключей и “секретного ключа”
-#     хранящегося в конфигурации проекта
-#     ({account_id}{amount}{transaction_id}{user_id}{secret_key}).
-# Пример, для secret_key gfdmhghif38yrf9ew0jkf32:
-# {
-#   "transaction_id": "5eae174f-7cd0-472c-bd36-35660f00132b",
-#   "user_id": 1,
-#   "account_id": 1,
-#   "amount": 100,
-#   "signature": "7b47e41efe564a062029da3367bde8844bea0fb049f894687cee5d57f2858bc8"
-# }
-#     """
