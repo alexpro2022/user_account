@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from toolkit.types_app import NonEmptyStr
 from typing_extensions import Doc
 
-from src.models.user import User
+from src.models import User
 
 from ..config import auth_conf
 from ..schemas import UserLoginForm

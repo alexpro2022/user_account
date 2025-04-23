@@ -1,14 +1,33 @@
 from typing import TypeAlias
+from uuid import uuid4
 
-from sqlalchemy import ForeignKey, orm
+from sqlalchemy import ForeignKey, String, orm
 from toolkit.models.base import Base, Mapped, mapped_column
 from toolkit.types_app import TypePK
 
+# UTILS =======================================================
 # from decimal import Decimal
 CurrencyType: TypeAlias = float  # Decimal
 NotRequiredStr: TypeAlias = str | None
 
+number_field = lambda **kwargs: mapped_column(  # noqa
+    String(256), unique=True, index=True, nullable=False, **kwargs
+)
+relation_field = lambda back_pop: orm.relationship(  # noqa
+    back_populates=back_pop,
+    cascade="all, delete-orphan",
+    # lazy="joined",
+)
 
+
+def generate_account_number() -> str:
+    """Here might be an account number generation logic.
+    Simple uuid patch at the moment.
+    """
+    return str(uuid4())
+
+
+# MODELS ========================================================
 class User(Base):
     email: Mapped[str] = mapped_column(unique=True, index=True)
     password: Mapped[str]
@@ -16,11 +35,7 @@ class User(Base):
     last_name: Mapped[NotRequiredStr]
     phone_number: Mapped[NotRequiredStr]
     admin: Mapped[bool] = mapped_column(default=False)
-    accounts: Mapped[list["Account"]] = orm.relationship(
-        back_populates="user",
-        cascade="all, delete-orphan",
-        # lazy="joined",
-    )
+    accounts: Mapped[list["Account"]] = relation_field("user")
 
     @property
     def full_name(self) -> str:
@@ -28,17 +43,15 @@ class User(Base):
 
 
 class Account(Base):
+    number = number_field(default=generate_account_number)
+    balance: Mapped[CurrencyType] = mapped_column(default=0)
     user_id: Mapped[TypePK] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = orm.relationship(back_populates="accounts")
-    balance: Mapped[CurrencyType] = mapped_column(default=0)
-    payments: Mapped[list["Payment"]] = orm.relationship(
-        back_populates="account",
-        cascade="all, delete-orphan",
-        # lazy="joined",
-    )
+    payments: Mapped[list["Payment"]] = relation_field("account")
 
 
 class Payment(Base):
+    transaction_id = number_field()
+    amount: Mapped[CurrencyType]
     account_id: Mapped[TypePK] = mapped_column(ForeignKey("account.id"))
     account: Mapped["Account"] = orm.relationship(back_populates="payments")
-    amount: Mapped[CurrencyType]

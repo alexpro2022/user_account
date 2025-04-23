@@ -1,9 +1,9 @@
-"""Standard session independant pass-through service."""
+"""Standard session independent pass-through service."""
 
 from toolkit.config.db_config import async_session
 from toolkit.types_app import TypeModel, TypePK
 
-from . import service_session_dependant as service
+from . import service_session_dependent as service
 
 
 async def get_all(model: TypeModel) -> list[TypeModel]:

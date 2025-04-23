@@ -1,59 +1,34 @@
-import logging
-from collections.abc import Coroutine
-
-from toolkit.repo.db.exceptions import AlreadyExists
-
 from src.auth.config import auth_conf
-from src.auth.services.password import hash_password
-from src.models.user import User
-
-# from src.services import user as user_service
-from src.n_toolkit.services import db_service
-
-from .factories import AccountFactory, PaymentFactory, UserFactory
-
-logging.basicConfig(level=logging.INFO)
-
-# ADMIN_PK = "43e0231a-9756-43bb-b9dc-f43567aa5010"
-# USER_PK = "43e0231a-9756-43bb-b9dc-f43567aa5011"
+from src.pre_load.factories import AccountFactory, PaymentFactory, UserFactory
+from src.pre_load.log import logger
+from src.services import account_service, payment_service, user_service
 
 
-async def try_load(coro: Coroutine):
-    try:
-        logging.info(f"=Loading {coro.__name__} data")
-        created = await coro
-        logging.info(f"=== {created}")
-    except AlreadyExists:
-        logging.info(f"{coro.__name__} data already exists... exiting.")
-        return None
-    return created
-
-
+@logger("=ADMIN=")
 async def create_admin():
-    return await db_service.create(
-        entity=User(
-            email=auth_conf.EMAIL,
-            password=hash_password(auth_conf.PASSWORD.get_secret_value()),
-            first_name=auth_conf.FIRST_NAME,
-            last_name=auth_conf.LAST_NAME,
-            phone_number=auth_conf.PHONE_NUMBER,
-            admin=True,
-        )
+    return await user_service.create(
+        email=auth_conf.EMAIL,
+        password=auth_conf.PASSWORD.get_secret_value(),
+        first_name=auth_conf.FIRST_NAME,
+        last_name=auth_conf.LAST_NAME,
+        phone_number=auth_conf.PHONE_NUMBER,
+        admin=True,
     )
 
 
+@logger("=DATA=")
 async def create_data(size: int = 3):
     users = [
-        await db_service.create(entity=user)
+        await user_service.create(obj=user)
         for user in UserFactory.build_batch(size=size)
     ]
     accounts = [
-        await db_service.create(entity=account)
+        await account_service.create(obj=account)
         for user in users
         for account in AccountFactory.build_batch(size=size, user_id=user.id)
     ]
     payments = [
-        await db_service.create(entity=payment)
+        await payment_service.create(obj=payment)
         for acc in accounts
         for payment in PaymentFactory.build_batch(size=size, account_id=acc.id)
     ]
@@ -61,5 +36,5 @@ async def create_data(size: int = 3):
 
 
 async def load_db():
-    await try_load(create_admin())
-    await try_load(create_data())
+    await create_admin()
+    await create_data()

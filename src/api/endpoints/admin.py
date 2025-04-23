@@ -8,13 +8,11 @@ from toolkit.api.fastapi.utils import try_return
 from toolkit.repo.db.exceptions import AlreadyExists
 from toolkit.types_app import TypePK
 
+from src import schemas
 from src.auth.api.dependencies import admin_access_only
 from src.auth.config import auth_conf
 from src.config import app_conf
-from src.models.user import User
-from src.n_toolkit.services import db_service
-from src.schemas import user as schemas
-from src.services import user as service
+from src.services import user_service
 
 _description = dict(description=auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)
@@ -46,9 +44,9 @@ async def create_user(
     create_data: schemas.UserCreate,
 ):
     return await try_return(
-        return_coro=db_service.create(
+        return_coro=user_service.create(
             session=session,
-            entity=User,
+            # entity=User,
             **create_data.model_dump(exclude_none=True),
         ),
         possible_exception=AlreadyExists,
@@ -67,9 +65,9 @@ async def update_user(
     update_data: schemas.UserUpdate,
 ):
     return await try_return(
-        return_coro=db_service.update(
+        return_coro=user_service.update(
             session=session,
-            model=User,
+            # model=User,
             id=user_id,
             **update_data.model_dump(exclude_none=True),
         )
@@ -86,9 +84,9 @@ async def delete_user(
     user_id: TypePK,
 ):
     return await try_return(
-        return_coro=db_service.delete(
+        return_coro=user_service.delete(
             session=session,
-            model=User,
+            # model=User,
             id=user_id,
         )
     )
@@ -101,7 +99,7 @@ async def delete_user(
     response_model=list[schemas.UserOut],
 )
 async def get_users(session: async_session):
-    return await db_service.get_all(session=session, model=User)
+    return await user_service.get_all(session=session)  # , model=User)
 
 
 @router.get(
@@ -109,10 +107,12 @@ async def get_users(session: async_session):
     summary="User's accounts",
     **_description,
     **_response_404,
-    response_model=schemas.UserAccounts,
+    response_model=list[schemas.Account],
 )
 async def get_user(
     session: async_session,
     user_id: TypePK,
 ):
-    return await try_return(return_coro=service.get_user_accounts(session, user_id))
+    return await try_return(
+        return_coro=user_service.get_user_accounts(session, user_id)
+    )
