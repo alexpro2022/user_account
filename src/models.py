@@ -1,6 +1,6 @@
 from typing import TypeAlias
 
-from sqlalchemy import ForeignKey, orm
+from sqlalchemy import ForeignKey, String, orm
 from toolkit.models.base import Base, Mapped, mapped_column
 from toolkit.types_app import TypePK
 
@@ -8,7 +8,9 @@ from toolkit.types_app import TypePK
 CurrencyType: TypeAlias = float  # Decimal
 NotRequiredStr: TypeAlias = str | None
 
-number_field = lambda: mapped_column(unique=True, index=True)  # noqa
+number_field = lambda: mapped_column(  # noqa
+    String(256), unique=True, index=True, nullable=False
+)
 relation_field = lambda back_pop: orm.relationship(  # noqa
     back_populates=back_pop,
     cascade="all, delete-orphan",
@@ -24,11 +26,6 @@ class User(Base):
     phone_number: Mapped[NotRequiredStr]
     admin: Mapped[bool] = mapped_column(default=False)
     accounts: Mapped[list["Account"]] = relation_field("user")
-    # orm.relationship(
-    #     back_populates="user",
-    #     cascade="all, delete-orphan",
-    #     # lazy="joined",
-    # )
 
     @property
     def full_name(self) -> str:
@@ -36,19 +33,15 @@ class User(Base):
 
 
 class Account(Base):
+    number = number_field()
+    balance: Mapped[CurrencyType] = mapped_column(default=0)
     user_id: Mapped[TypePK] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = orm.relationship(back_populates="accounts")
-    number: Mapped[str] = number_field()
-    balance: Mapped[CurrencyType] = mapped_column(default=0)
     payments: Mapped[list["Payment"]] = relation_field("account")
-    # orm.relationship(
-    #     back_populates="account",
-    #     cascade="all, delete-orphan",
-    # )
 
 
 class Payment(Base):
+    number = number_field()
+    amount: Mapped[CurrencyType]
     account_id: Mapped[TypePK] = mapped_column(ForeignKey("account.id"))
     account: Mapped["Account"] = orm.relationship(back_populates="payments")
-    number: Mapped[str] = number_field()
-    amount: Mapped[CurrencyType]

@@ -1,8 +1,8 @@
 """migration №1
 
-Revision ID: 9c1a7f7cfdf1
+Revision ID: f03e74ab54df
 Revises:
-Create Date: 2025-04-23 10:50:15.341979
+Create Date: 2025-04-23 11:36:38.458170
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "9c1a7f7cfdf1"
+revision: str = "f03e74ab54df"
 down_revision: str | None = None
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
@@ -37,9 +37,9 @@ def upgrade() -> None:
 
     op.create_table(
         "account",
-        sa.Column("user_id", sa.UUID(), nullable=False),
-        sa.Column("number", sa.String(), nullable=False),
+        sa.Column("number", sa.String(length=256), nullable=False),
         sa.Column("balance", sa.Float(), nullable=False),
+        sa.Column("user_id", sa.UUID(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(
             ["user_id"], ["user.id"], name=op.f("fk_account_user_id_user")
@@ -51,9 +51,9 @@ def upgrade() -> None:
 
     op.create_table(
         "payment",
-        sa.Column("account_id", sa.UUID(), nullable=False),
-        sa.Column("number", sa.String(), nullable=False),
+        sa.Column("number", sa.String(length=256), nullable=False),
         sa.Column("amount", sa.Float(), nullable=False),
+        sa.Column("account_id", sa.UUID(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(
             ["account_id"], ["account.id"], name=op.f("fk_payment_account_id_account")
