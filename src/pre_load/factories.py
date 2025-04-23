@@ -13,9 +13,11 @@ class UserFactory(f.Factory):
         model = User
 
     first_name = f.Sequence(lambda n: f"User_{n}")
-    email = f.LazyAttribute(lambda self: f"{self.first_name.lower()}@example.com")
+    email = f.LazyAttribute(
+        lambda self: f"{self.first_name.lower()}@example.com",
+    )
     password = f.LazyAttribute(
-        lambda self: hash_password(f"{self.first_name.lower()}_pwd")
+        lambda self: hash_password(f"{self.first_name.lower()}_pwd"),
     )
     last_name = f.Faker("last_name")
     phone_number = f.Faker("msisdn")
@@ -41,7 +43,7 @@ class PaymentFactory(f.Factory):
         model = Payment
 
     account_id = f.SubFactory(AccountFactory)
-    number = number_field("Payment_ID")
+    transaction_id = number_field("Payment_ID")
     amount = f.LazyFunction(lambda: randint(0, 10))
 
 

@@ -1,6 +1,4 @@
 from src.auth.config import auth_conf
-
-# from src.auth.services.password import hash_password
 from src.pre_load.factories import AccountFactory, PaymentFactory, UserFactory
 from src.pre_load.log import logger
 from src.services import account_service, payment_service, user_service
@@ -10,7 +8,6 @@ from src.services import account_service, payment_service, user_service
 async def create_admin():
     return await user_service.create(
         email=auth_conf.EMAIL,
-        # password=hash_password(auth_conf.PASSWORD.get_secret_value()),
         password=auth_conf.PASSWORD.get_secret_value(),
         first_name=auth_conf.FIRST_NAME,
         last_name=auth_conf.LAST_NAME,

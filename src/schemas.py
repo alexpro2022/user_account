@@ -6,10 +6,18 @@ from toolkit.types_app import NonEmptyStr, TypePK
 from src.models import CurrencyType
 
 
+class Transaction(BaseModel):
+    transaction_id: NonEmptyStr
+    user_id: TypePK
+    account_id: TypePK
+    amount: CurrencyType
+    signature: NonEmptyStr
+
+
 class Payment(Base):
     # TODO: to remove account_id
     account_id: TypePK
-    number: NonEmptyStr
+    transaction_id: NonEmptyStr
     amount: CurrencyType
 
 

@@ -41,7 +41,7 @@ class Account(Base):
 
 
 class Payment(Base):
-    number = number_field()
+    transaction_id = number_field()
     amount: Mapped[CurrencyType]
     account_id: Mapped[TypePK] = mapped_column(ForeignKey("account.id"))
     account: Mapped["Account"] = orm.relationship(back_populates="payments")
