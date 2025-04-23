@@ -4,7 +4,7 @@ from typing import Any
 
 from fastapi import FastAPI
 
-from src.api.endpoints import admin, development, user
+from src.api.endpoints import admin, development, transaction, user
 from src.auth.api import endpoints as auth
 from src.config import app_conf
 from src.pre_load.load_db import load_db
@@ -25,6 +25,7 @@ app = FastAPI(
 
 for router in (
     development.router,
+    transaction.router,
     auth.router,
     user.router,
     admin.router,

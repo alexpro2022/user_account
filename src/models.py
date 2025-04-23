@@ -1,15 +1,17 @@
 from typing import TypeAlias
+from uuid import uuid4
 
 from sqlalchemy import ForeignKey, String, orm
 from toolkit.models.base import Base, Mapped, mapped_column
 from toolkit.types_app import TypePK
 
+# UTILS =======================================================
 # from decimal import Decimal
 CurrencyType: TypeAlias = float  # Decimal
 NotRequiredStr: TypeAlias = str | None
 
-number_field = lambda: mapped_column(  # noqa
-    String(256), unique=True, index=True, nullable=False
+number_field = lambda **kwargs: mapped_column(  # noqa
+    String(256), unique=True, index=True, nullable=False, **kwargs
 )
 relation_field = lambda back_pop: orm.relationship(  # noqa
     back_populates=back_pop,
@@ -18,6 +20,14 @@ relation_field = lambda back_pop: orm.relationship(  # noqa
 )
 
 
+def generate_account_number() -> str:
+    """Here might be an account number generation logic.
+    Simple uuid patch at the moment.
+    """
+    return str(uuid4())
+
+
+# MODELS ========================================================
 class User(Base):
     email: Mapped[str] = mapped_column(unique=True, index=True)
     password: Mapped[str]
@@ -33,7 +43,7 @@ class User(Base):
 
 
 class Account(Base):
-    number = number_field()
+    number = number_field(default=generate_account_number)
     balance: Mapped[CurrencyType] = mapped_column(default=0)
     user_id: Mapped[TypePK] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = orm.relationship(back_populates="accounts")
