@@ -1,38 +1,37 @@
 from src.auth.config import auth_conf
-from src.auth.services.password import hash_password
-from src.models import User
-from src.n_toolkit.services import db_service
+
+# from src.auth.services.password import hash_password
 from src.pre_load.factories import AccountFactory, PaymentFactory, UserFactory
 from src.pre_load.log import logger
+from src.services import account_service, payment_service, user_service
 
 
 @logger("=ADMIN=")
 async def create_admin():
-    return await db_service.create(
-        entity=User(
-            email=auth_conf.EMAIL,
-            password=hash_password(auth_conf.PASSWORD.get_secret_value()),
-            first_name=auth_conf.FIRST_NAME,
-            last_name=auth_conf.LAST_NAME,
-            phone_number=auth_conf.PHONE_NUMBER,
-            admin=True,
-        )
+    return await user_service.create(
+        email=auth_conf.EMAIL,
+        # password=hash_password(auth_conf.PASSWORD.get_secret_value()),
+        password=auth_conf.PASSWORD.get_secret_value(),
+        first_name=auth_conf.FIRST_NAME,
+        last_name=auth_conf.LAST_NAME,
+        phone_number=auth_conf.PHONE_NUMBER,
+        admin=True,
     )
 
 
 @logger("=DATA=")
 async def create_data(size: int = 3):
     users = [
-        await db_service.create(entity=user)
+        await user_service.create(obj=user)
         for user in UserFactory.build_batch(size=size)
     ]
     accounts = [
-        await db_service.create(entity=account)
+        await account_service.create(obj=account)
         for user in users
         for account in AccountFactory.build_batch(size=size, user_id=user.id)
     ]
     payments = [
-        await db_service.create(entity=payment)
+        await payment_service.create(obj=payment)
         for acc in accounts
         for payment in PaymentFactory.build_batch(size=size, account_id=acc.id)
     ]

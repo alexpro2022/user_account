@@ -1,8 +1,8 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr
 from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr, TypePK
 
-from src.auth.services.password import hash_password
+# from src.auth.services.password import hash_password
 from src.models import CurrencyType
 
 
@@ -41,10 +41,10 @@ class UserCreate(UserUpdate, Base):
     email: EmailStr
     password: NonEmptyStr
 
-    @field_validator("password", mode="after")
-    @classmethod
-    def hash_pwd(cls, password: str) -> str:
-        return hash_password(password)
+    # @field_validator("password", mode="after")
+    # @classmethod
+    # def hash_pwd(cls, password: str) -> str:
+    #     return hash_password(password)
 
 
 # class PaymentsMixin:

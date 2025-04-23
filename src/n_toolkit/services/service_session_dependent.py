@@ -1,4 +1,4 @@
-"""Standard session dependant pass-through service."""
+"""Standard session dependent pass-through service."""
 
 from toolkit.repo.db import crud
 from toolkit.types_app import _AS, TypeModel, TypePK
