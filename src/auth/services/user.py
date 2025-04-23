@@ -1,7 +1,7 @@
 from toolkit.api.fastapi.dependencies import async_session
 from toolkit.repo.db import crud, exceptions
 
-from src.models.user import User
+from src.models import User
 
 from ..api.dependencies import jwt_token, login_form_data
 from ..api.exceptions import IncorrectLoginCredentials, InvalidTokenPayload

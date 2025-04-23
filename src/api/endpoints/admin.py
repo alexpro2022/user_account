@@ -8,13 +8,12 @@ from toolkit.api.fastapi.utils import try_return
 from toolkit.repo.db.exceptions import AlreadyExists
 from toolkit.types_app import TypePK
 
+from src import schemas, services
 from src.auth.api.dependencies import admin_access_only
 from src.auth.config import auth_conf
 from src.config import app_conf
-from src.models.user import User
+from src.models import User
 from src.n_toolkit.services import db_service
-from src.schemas import user as schemas
-from src.services import user as service
 
 _description = dict(description=auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)
@@ -109,10 +108,10 @@ async def get_users(session: async_session):
     summary="User's accounts",
     **_description,
     **_response_404,
-    response_model=schemas.UserAccounts,
+    response_model=list[schemas.Account],
 )
 async def get_user(
     session: async_session,
     user_id: TypePK,
 ):
-    return await try_return(return_coro=service.get_user_accounts(session, user_id))
+    return await try_return(return_coro=services.get_user_accounts(session, user_id))

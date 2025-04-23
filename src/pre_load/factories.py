@@ -38,6 +38,7 @@ class AccountFactory(f.Factory):
         model = Account
 
     user_id = f.SubFactory(UserFactory)
+    number = f.Sequence(lambda n: f"Account_No_{n}")
 
 
 class PaymentFactory(f.Factory):
@@ -45,4 +46,5 @@ class PaymentFactory(f.Factory):
         model = Payment
 
     account_id = f.SubFactory(AccountFactory)
+    number = f.Sequence(lambda n: f"Payment_ID_{n}")
     amount = f.LazyFunction(lambda: randint(-10, 10))

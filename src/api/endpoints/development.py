@@ -7,10 +7,9 @@ from fastapi import APIRouter
 from toolkit.api.fastapi.dependencies import async_session
 from toolkit.types_app import TypePK
 
-from src.models.user import Account, Payment, User
+from src.models import Account, Payment, User
 from src.n_toolkit.services import db_service
-from src.schemas import user
-from src.services.user import get_user_accounts
+from src.services import get_user_accounts, get_user_payments
 
 router = APIRouter(
     prefix="/auth/development",
@@ -43,12 +42,24 @@ async def get_paymentss_development(session: async_session):
 
 
 @router.get(
-    "/{user_id}",
+    "/accounts/{user_id}",
     summary="User's accounts ",
-    response_model=user.UserAccounts,
+    # response_model=user.UserAccounts,
 )
-async def get_user_development(
+async def get_user_accounts_development(
     session: async_session,
     user_id: TypePK,
 ):
     return await get_user_accounts(session, user_id)
+
+
+@router.get(
+    "/payments/{user_id}",
+    summary="User's payments",
+    # response_model=user.UserAccounts,
+)
+async def get_user_payments_development(
+    session: async_session,
+    user_id: TypePK,
+):
+    return await get_user_payments(session, user_id)

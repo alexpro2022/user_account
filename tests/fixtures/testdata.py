@@ -1,7 +1,7 @@
 from toolkit.test_tools import Data
 
 from src.auth.services.password import hash_password
-from src.models.user import User
+from src.models import User
 
 
 class _Data(Data):
@@ -23,7 +23,9 @@ class _Data(Data):
         return dict(
             id=str(self.item_uuid),
             email=self.create_data["email"],
-            full_name=f"{self.create_data.get('first_name')} {self.create_data.get('last_name')}",
+            full_name=(
+                f"{self.create_data.get('first_name')} {self.create_data.get('last_name')}"
+            ),
         )
 
 
@@ -59,3 +61,15 @@ ADMIN_TEST_DATA = _Data(
         "phone_number": "+79213452402",
     },
 )
+
+# from uuid import uuid4
+# ACCOUNT_TEST_DATA = Data(
+#     model=Account,
+#     create_data={
+#         "user_id": uuid4(),
+#         "number": "1",
+#     }
+#     update_data={
+#         "balance": 10.5,
+#     }
+# )

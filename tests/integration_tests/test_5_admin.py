@@ -2,7 +2,7 @@ from toolkit.test_tools.base_test_fastapi import HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
 from src.api.endpoints import admin, user
-from src.schemas.user import UserAccounts, UserOut
+from src.schemas import UserOut
 from tests.fixtures.testdata import ADMIN_TEST_DATA, USER_TEST_DATA
 from tests.fixtures.testtools import BaseTest_API
 from tests.integration_tests.utils import PathParamMixin
@@ -61,8 +61,9 @@ class Test_AdminGetRecord(PathParamMixin, LoggedInAdmin):
     http_method = HTTPMethod.GET
     path_func = admin.get_user
     path_params = dict(user_id=ADMIN_TEST_DATA.item_uuid)
-    expected_response_model = UserAccounts
-    expected_response_json = {
-        **ADMIN_TEST_DATA.expected_response_json_create,
-        "accounts": [],
-    }
+    # expected_response_model = list[Account]
+    expected_response_json = []
+    # {
+    #     **ADMIN_TEST_DATA.expected_response_json_create,
+    #     "accounts": [],
+    # }

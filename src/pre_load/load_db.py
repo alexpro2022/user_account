@@ -1,34 +1,12 @@
-import logging
-from collections.abc import Coroutine
-
-from toolkit.repo.db.exceptions import AlreadyExists
-
 from src.auth.config import auth_conf
 from src.auth.services.password import hash_password
-from src.models.user import User
-
-# from src.services import user as user_service
+from src.models import User
 from src.n_toolkit.services import db_service
-
-from .factories import AccountFactory, PaymentFactory, UserFactory
-
-logging.basicConfig(level=logging.INFO)
-
-# ADMIN_PK = "43e0231a-9756-43bb-b9dc-f43567aa5010"
-# USER_PK = "43e0231a-9756-43bb-b9dc-f43567aa5011"
+from src.pre_load.factories import AccountFactory, PaymentFactory, UserFactory
+from src.pre_load.log import logger
 
 
-async def try_load(coro: Coroutine):
-    try:
-        logging.info(f"=Loading {coro.__name__} data")
-        created = await coro
-        logging.info(f"=== {created}")
-    except AlreadyExists:
-        logging.info(f"{coro.__name__} data already exists... exiting.")
-        return None
-    return created
-
-
+@logger("=ADMIN=")
 async def create_admin():
     return await db_service.create(
         entity=User(
@@ -42,6 +20,7 @@ async def create_admin():
     )
 
 
+@logger("=DATA=")
 async def create_data(size: int = 3):
     users = [
         await db_service.create(entity=user)
@@ -61,5 +40,5 @@ async def create_data(size: int = 3):
 
 
 async def load_db():
-    await try_load(create_admin())
-    await try_load(create_data())
+    await create_admin()
+    await create_data()
