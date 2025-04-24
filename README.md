@@ -1,6 +1,7 @@
 # User_accounts
 
 [![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
+[![CI/CD](https://github.com/alexpro2022/user_account/actions/workflows/flow_ci_cd.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_ci_cd.yaml)
 
 Проект развернут на удаленном сервере.
 Техническая документация:
