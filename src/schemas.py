@@ -5,7 +5,7 @@ from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr, TypePK
 
 from src.config import app_conf
-from src.models import CurrencyType
+from src.models import CurrencyType, generate_account_number
 
 # FIELDS =========================================================
 TransactionType = Annotated[
@@ -43,6 +43,13 @@ BalanceType = Annotated[
         examples=[10.5],
     ),
 ]
+AccountNumberType = Annotated[
+    NonEmptyStr,
+    Field(
+        description="номер счета пользователя",
+        examples=[generate_account_number()],
+    ),
+]
 SignatureType = Annotated[
     NonEmptyStr,
     Field(
@@ -72,7 +79,7 @@ class Payment(Base):
 
 class Account(Base):
     user_id: UserType
-    number: NonEmptyStr
+    number: AccountNumberType
     balance: BalanceType
 
 

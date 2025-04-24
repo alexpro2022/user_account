@@ -20,13 +20,20 @@ jobs:
             sudo mkdir -p ${{ github.event.repository.name }} -m 777
             sudo cat > ${{ github.event.repository.name }}/.env << _EOF_
 
-              BOT_TOKEN=${{ secrets.BOT_TOKEN }}
-              APP_PORT=${{ vars.APP_PORT }}
-              APP_TITLE=${{ vars.APP_TITLE }}
-              APP_DESCRIPTION=${{ vars.APP_DESCRIPTION }}
+              APP_PORT=8000
+              APP_TITLE=Пользрвательские счета и платежи
+              APP_DESCRIPTION=HTTP-сервис на FastAPI, асинхронное веб приложение в парадигме REST API.
               SECRET_KEY=${{ secrets.SECRET_KEY }}
 
-              DB_ADMIN_PORT=${{ vars.DB_ADMIN_PORT }}
+              # = Authorisation settings =
+              EMAIL=admin@admin.com
+              PASSWORD=admin_pwd
+              FIRST_NAME=admin
+              LAST_NAME=admin
+              PHONE_NUMBER=+79991112233
+              TOKEN_LIFETIME=30
+
+              DB_ADMIN_PORT=8001
               DB_TAG=15.1-alpine
               DB_DEFAULT=postgres
               DB_USER=postgres
@@ -35,17 +42,22 @@ jobs:
               DB_PORT=5432
               DB_NAME=postgres
 
+              # Let's defaults to work
+                # INTERVAL=10s
+                # TIMEOUT=10s
+                # RETRIES=3
+                # START_PERIOD=10s
+
               # Below are examples for secrets and vars
+                # APP_PORT=${{ vars.APP_PORT }}
+                # APP_TITLE=${{ vars.APP_TITLE }}
+                # APP_DESCRIPTION=${{ vars.APP_DESCRIPTION }}
+                # DB_ADMIN_PORT=${{ vars.DB_ADMIN_PORT }}
                 # DB_USER=${{ secrets.DB_USER }}
                 # DB_PASSWORD=${{ secrets.DB_PASSWORD }}
                 # DB_HOST=${{ vars.DB_HOST }}
                 # DB_PORT=${{ vars.DB_PORT }}
                 # DB_NAME=${{ vars.DB_NAME }}
-
-              # INTERVAL=10s
-              # TIMEOUT=10s
-              # RETRIES=3
-              # START_PERIOD=10s
 
               DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
               GITHUB_REPO_NAME=${{ github.event.repository.name }}:latest
