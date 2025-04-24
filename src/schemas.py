@@ -44,7 +44,7 @@ BalanceType = Annotated[
     ),
 ]
 AccountNumberType = Annotated[
-    CurrencyType,
+    NonEmptyStr,
     Field(
         description="номер счета пользователя",
         examples=[generate_account_number()],
