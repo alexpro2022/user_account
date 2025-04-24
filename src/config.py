@@ -7,8 +7,10 @@ from toolkit.config import (  # noqa
 
 
 class SettingsApp(app_config.SettingsApp):
-    app_title: str = "Сервис платежей."
-    app_description: str = "Описание сервиса платежей"
+    app_title: str = "Пользовательские счета и платежи"
+    app_description: str = (
+        "HTTP-сервис на FastAPI, в котором можно хранить конфиденциальные данные"
+    )
 
 
 app_conf = SettingsApp()

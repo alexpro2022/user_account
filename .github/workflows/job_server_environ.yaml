@@ -21,7 +21,7 @@ jobs:
             sudo cat > ${{ github.event.repository.name }}/.env << _EOF_
 
               APP_PORT=8000
-              APP_TITLE=Пользрвательские счета и платежи
+              APP_TITLE=Пользовательские счета и платежи
               APP_DESCRIPTION=HTTP-сервис на FastAPI, асинхронное веб приложение в парадигме REST API.
               SECRET_KEY=${{ secrets.SECRET_KEY }}
 
