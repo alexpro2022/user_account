@@ -1,36 +1,79 @@
-from pydantic import BaseModel, EmailStr
+from typing import Annotated
+
+from pydantic import BaseModel, EmailStr, Field
 from toolkit.schemas.base import Base
 from toolkit.types_app import NonEmptyStr, TypePK
 
 from src.config import app_conf
-
-# from src.auth.services.password import hash_password
 from src.models import CurrencyType
 
+# FIELDS =========================================================
+TransactionType = Annotated[
+    NonEmptyStr,
+    Field(
+        description="уникальный идентификатор транзакции в “сторонней системе”",
+        examples=["5eae174f-7cd0-472c-bd36-35660f00132b"],
+    ),
+]
+UserType = Annotated[
+    TypePK,
+    Field(
+        description="уникальный идентификатор пользователя",
+        examples=["5eae174f-7cd0-472c-bd36-35660f00132b"],
+    ),
+]
+AccountType = Annotated[
+    TypePK,
+    Field(
+        description="уникауникальный идентификатор счета пользователя",
+        examples=["5eae174f-7cd0-472c-bd36-35660f00132b"],
+    ),
+]
+AmountType = Annotated[
+    CurrencyType,
+    Field(
+        description="сумма пополнения счета пользователя",
+        examples=[10.5],
+    ),
+]
+BalanceType = Annotated[
+    CurrencyType,
+    Field(
+        description="баланс счета пользователя",
+        examples=[10.5],
+    ),
+]
+SignatureType = Annotated[
+    NonEmptyStr,
+    Field(
+        description="подпись объекта",
+        examples=["5eae174f-7cd0-472c-bd36-35660f00132b"],
+    ),
+]
 
+
+# SCHEMAS =======================================================
 class Transaction(BaseModel):
-    transaction_id: NonEmptyStr
-    user_id: TypePK
-    account_id: TypePK
-    amount: CurrencyType
-    signature: NonEmptyStr
+    transaction_id: TransactionType
+    user_id: UserType
+    account_id: AccountType
+    amount: AmountType
+    signature: SignatureType
 
     def get_string(self, secret_key: str = app_conf.secret_key):
         return f"{self.account_id}{self.amount}{self.transaction_id}{self.user_id}{secret_key}"
 
 
 class Payment(Base):
-    # TODO: to remove account_id
-    account_id: TypePK
-    transaction_id: NonEmptyStr
-    amount: CurrencyType
+    account_id: AccountType
+    transaction_id: TransactionType
+    amount: AmountType
 
 
 class Account(Base):
-    # TODO: to remove user_id
-    user_id: TypePK
+    user_id: UserType
     number: NonEmptyStr
-    balance: CurrencyType
+    balance: BalanceType
 
 
 class Me(Base):
@@ -53,20 +96,3 @@ class UserOut(UserUpdate, Base):
 class UserCreate(UserUpdate, Base):
     email: EmailStr
     password: NonEmptyStr
-
-    # @field_validator("password", mode="after")
-    # @classmethod
-    # def hash_pwd(cls, password: str) -> str:
-    #     return hash_password(password)
-
-
-# class PaymentsMixin:
-#     accounts: list[Payment]
-# class AccountsMixin:
-#     accounts: list[Account]
-# class MeAccounts(AccountsMixin, Me):
-#     pass
-# class MePayments(PaymentsMixin, Me):
-#     pass
-# class UserAccounts(AccountsMixin, UserOut):
-#     pass
