@@ -46,4 +46,9 @@ async def delete(
     id: TypePK,
 ) -> TypeModel:
     assert session.in_transaction()
-    return await crud.delete(session, model, id)
+    # below crud.delete has a problem with models with relations
+    # return await crud.delete(session, model, id)
+    obj = await crud.get_one(session, model, id=id)
+    session.add(obj)
+    await session.delete(obj)
+    return obj
