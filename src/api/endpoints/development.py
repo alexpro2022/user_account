@@ -10,8 +10,8 @@ from toolkit.types_app import TypePK
 from src.services import account_service, payment_service, user_service
 
 router = APIRouter(
-    prefix="/auth/development",
-    tags=["Auth Development"],
+    prefix="/development",
+    tags=["Development"],
 )
 
 
