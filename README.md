@@ -61,7 +61,7 @@ http://185.221.162.231:8001<br>
 [![Pytest-asyncio](https://img.shields.io/badge/-Pytest--asyncio-464646?logo=Pytest-asyncio)](https://pypi.org/project/pytest-asyncio/)
 [![pytest-cov](https://img.shields.io/badge/-pytest--cov-464646?logo=codecov)](https://pytest-cov.readthedocs.io/en/latest/)
 [![pre-commit](https://img.shields.io/badge/-pre--commit-464646?logo=pre-commit)](https://pre-commit.com/)
-[![toolkit](https://img.shields.io/badge/-toolkit-464646?logo=python)](https://pypi.org/project/app-toolkit-package/)
+[![factory_boy](https://img.shields.io/badge/-factory_boy-464646?logo=factory_boy)](https://factoryboy.readthedocs.io/en/stable/index.html)[![toolkit](https://img.shields.io/badge/-toolkit-464646?logo=python)](https://pypi.org/project/app-toolkit-package/)
 
 <h1></h1>
 </details>
@@ -105,6 +105,11 @@ http://185.221.162.231:8001<br>
   LAST_NAME=admin
   PHONE_NUMBER=+79991112233
   ```
+
+БД заполнена тестовыми данными:
+  * Пользователи - 3
+  * Счета - 3 на каждого пользователя (итого 9)
+  * Платежи - 3 на каждый счет (итого 27)
 
   #### Пользователь может быть создан с любыми правами.
   - Данные для создания:
