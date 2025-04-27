@@ -1,5 +1,3 @@
-from src.models import User
-
 from ...api.fastapi.dependencies import async_session
 from ...repo.db import crud, exceptions
 from ..api.dependencies import jwt_token, login_form_data
@@ -11,7 +9,9 @@ from .token import get_token_payload
 async def authenticate_user(
     session: async_session,
     data: login_form_data,
-) -> User:
+):
+    from src.models import User
+
     try:
         user: User = await crud.get_one(session, User, email=data.username)
     except exceptions.NotFound:
@@ -24,11 +24,10 @@ async def authenticate_user(
 async def get_current_user(
     session: async_session,
     token: jwt_token,
-) -> User:
+):
+    from src.models import User
+
     try:
-        user: User = await crud.get_one(
-            session, User, email=get_token_payload(token).sub
-        )
+        return await crud.get_one(session, User, email=get_token_payload(token).sub)
     except exceptions.NotFound:
         raise InvalidTokenPayload
-    return user

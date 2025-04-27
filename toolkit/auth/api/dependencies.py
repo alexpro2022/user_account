@@ -4,8 +4,7 @@ from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing_extensions import Doc
 
-from src.models import User
-
+from ...models.user import BaseUser as User
 from ...types_app import NonEmptyStr
 from ..config import auth_conf
 from ..schemas import UserLoginForm

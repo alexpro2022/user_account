@@ -3,8 +3,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from pydantic import ValidationError
 
-from src.models import User
-
+from ...models.user import BaseUser as User
 from ..api.exceptions import ExpiredToken, InvalidTokenPayload
 from ..config import auth_conf
 from ..schemas import TokenPayload
