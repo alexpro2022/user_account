@@ -30,7 +30,7 @@ def get_me(user: current_user):
     response_model=list[schemas.Account],
 )
 async def get_me_accounts(session: async_session, user: current_user):
-    return await user_service.get_user_accounts(session, user.id)
+    return await user_service.get_user_accounts(session, user.id, me=True)
 
 
 @router.get(
@@ -39,4 +39,4 @@ async def get_me_accounts(session: async_session, user: current_user):
     response_model=list[schemas.Payment],
 )
 async def get_me_payments(session: async_session, user: current_user):
-    return await user_service.get_user_payments(session, user.id)
+    return await user_service.get_user_payments(session, user.id, me=True)

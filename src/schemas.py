@@ -66,11 +66,17 @@ SignatureType = Annotated[
 
 
 # SCHEMAS =======================================================
-class Transaction(BaseModel):
+class _Transaction(BaseModel):
     transaction_id: TransactionType
-    user_id: UserType
     account_id: AccountType
     amount: AmountType
+
+
+class TransactionOut(_Transaction, Base): ...  # noqa
+
+
+class Transaction(_Transaction):  # noqa
+    user_id: UserType
     signature: SignatureType
 
     def get_string(self, secret_key: str = app_conf.secret_key):

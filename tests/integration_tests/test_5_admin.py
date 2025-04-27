@@ -1,13 +1,20 @@
 from uuid import uuid4
 
+from src import schemas
 from src.api.endpoints import admin, user
-from src.schemas import UserOut
 from tests.fixtures.testdata import ADMIN_TEST_DATA, USER_TEST_DATA
+from toolkit.schemas.base import ExtraForbidMixin
 from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
 # UTILS ================================================================
 FAKE_UUID = uuid4()
+
+
+class UserOutStrict(schemas.UserOut, ExtraForbidMixin): ...  # noqa
+
+
+class MeOutStrict(schemas.Me, ExtraForbidMixin): ...  # noqa
 
 
 class LoggedInAdmin(DBMixin, BaseTest_API):
@@ -54,7 +61,7 @@ class Test_AdminCreateRecord(LoggedInAdmin):
         "password": USER_TEST_DATA.password,
     }
     expected_status_code = 201
-    expected_response_model = UserOut
+    expected_response_model = UserOutStrict
     expected_response_json = USER_TEST_DATA.expected_response_json_create
     expected_response_json_exclude = ["id"]
 
@@ -70,7 +77,7 @@ class Test_AdminUpdateRecord(Found):
     http_method = HTTPMethod.PATCH
     path_func = admin.update_user
     json = ADMIN_TEST_DATA.update_data_json
-    expected_response_model = UserOut
+    expected_response_model = UserOutStrict
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_update
     # db_vs_response = True  # check fails as response excludes hash_password
 
@@ -84,7 +91,7 @@ class Test_AdminDeleteRecordNotFound(NotFound):
 class Test_AdminDeleteRecord(Found):
     http_method = HTTPMethod.DELETE
     path_func = admin.delete_user
-    expected_response_model = UserOut
+    expected_response_model = UserOutStrict
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_create
     db_vs_response = True
     db_delete_action = True
@@ -94,6 +101,7 @@ class Test_AdminDeleteRecord(Found):
 class Test_AuthGetMe(LoggedInAdmin):
     http_method = HTTPMethod.GET
     path_func = user.get_me
+    expected_response_model = MeOutStrict
     expected_response_json = ADMIN_TEST_DATA.get_expected_me_data()
 
 
@@ -111,7 +119,7 @@ class Test_AdminGetRecordNotFound(NotFound):
 class Test_AdminGetRecord(Found):
     http_method = HTTPMethod.GET
     path_func = admin.get_user
-    expected_response_model = UserOut
+    expected_response_model = UserOutStrict
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_create
 
 

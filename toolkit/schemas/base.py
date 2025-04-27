@@ -33,3 +33,7 @@ class Base(BaseModel):
     #     return super().model_validate(
     #         obj.model_dump() if isinstance(obj, BaseModel) else obj
     #     )
+
+
+class ExtraForbidMixin:
+    model_config = ConfigDict(extra="forbid")
