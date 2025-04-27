@@ -2,8 +2,8 @@ from random import randint
 
 import factory as f
 
-from src.auth.services.password import hash_password
 from src.models import Account, Payment, User
+from toolkit.auth.services.password import hash_password
 
 number_field = lambda name: f.Sequence(lambda n: f"{name}_{n}")  # noqa
 
@@ -45,12 +45,3 @@ class PaymentFactory(f.Factory):
     account_id = f.SubFactory(AccountFactory)
     transaction_id = number_field("Payment_ID")
     amount = f.LazyFunction(lambda: randint(0, 10))
-
-
-# from faker import Faker
-# Faker.phone_number()
-# first_name = fake("first_name")
-# email = fake("email")
-# fake("password")
-# f.Sequence(lambda n: f"Account_No_{n}")
-# f.Sequence(lambda n: f"Payment_ID_{n}")

@@ -1,11 +1,9 @@
+from src import config
 from toolkit.test_tools import (
     BaseTest_Config,
     BaseTest_DBConfig,
     BaseTest_RedisConfig,
 )
-
-from src import config
-from src.auth import config as auth_config
 
 
 class Test_AppConfig(BaseTest_Config):
@@ -17,7 +15,7 @@ class Test_AppConfig(BaseTest_Config):
 
 
 class Test_AuthConfig(BaseTest_Config):
-    module = auth_config
+    module = config.auth_config
     conf_name = "auth_conf"
     conf_fields = {
         "TOKEN_URL": "/auth/jwt/login",

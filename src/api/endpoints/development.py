@@ -4,10 +4,10 @@ It is just for convenient checking on development.
 """
 
 from fastapi import APIRouter
-from toolkit.api.fastapi.dependencies import async_session
-from toolkit.types_app import TypePK
 
+from src.api.dependencies import async_session
 from src.services import account_service, payment_service, user_service
+from toolkit.types_app import TypePK
 
 router = APIRouter(
     prefix="/development",
@@ -40,7 +40,7 @@ async def get_paymentss_development(session: async_session):
 
 
 @router.get(
-    "/accounts/{user_id}",
+    "/{user_id}/accounts",
     summary="User's accounts ",
 )
 async def get_user_accounts_development(
@@ -51,7 +51,7 @@ async def get_user_accounts_development(
 
 
 @router.get(
-    "/payments/{user_id}",
+    "/{user_id}/payments",
     summary="User's payments",
 )
 async def get_user_payments_development(

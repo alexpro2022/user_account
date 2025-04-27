@@ -1,7 +1,6 @@
-from toolkit.test_tools.utils import assert_equal
-
 from src import schemas
-from src.n_toolkit.utils import sha256_hash
+from toolkit.test_tools.utils import assert_equal
+from toolkit.utils.misc_utils import sha256_hash
 
 TEST_DATA = {
     "transaction_id": "5eae174f-7cd0-472c-bd36-35660f00132b",

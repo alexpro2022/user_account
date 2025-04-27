@@ -1,7 +1,7 @@
-from src.auth.config import auth_conf
 from src.pre_load.factories import AccountFactory, PaymentFactory, UserFactory
-from src.pre_load.log import logger
 from src.services import account_service, payment_service, user_service
+from toolkit.auth.config import auth_conf
+from toolkit.utils.misc_utils import logger
 
 
 @logger("=ADMIN=")

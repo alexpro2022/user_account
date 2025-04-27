@@ -16,7 +16,7 @@ RUN python -m pip install --upgrade pip && pip install .[test]
 COPY tests tests
 # App ==============
 COPY src src
-# COPY toolkit toolkit
+COPY toolkit toolkit
 
 
 FROM base AS app
@@ -38,7 +38,7 @@ COPY alembic.ini .
 COPY alembic alembic
 # App ==============
 COPY src src
-# COPY toolkit toolkit
+COPY toolkit toolkit
 
 
 # FROM base AS migration
