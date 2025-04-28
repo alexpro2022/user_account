@@ -1,9 +1,6 @@
 from typing import Annotated
 
 from pydantic import BaseModel, Field
-
-from src.config import app_conf
-from src.models import CurrencyType, generate_account_number
 from toolkit.schemas.base import Base
 from toolkit.schemas.user import (
     BaseMe,
@@ -12,6 +9,9 @@ from toolkit.schemas.user import (
     BaseUserUpdate,
 )
 from toolkit.types_app import NonEmptyStr, TypePK
+
+from src.config import app_conf
+from src.models import CurrencyType, generate_account_number
 
 # FIELDS =========================================================
 TransactionType = Annotated[
@@ -72,10 +72,11 @@ class _Transaction(BaseModel):
     amount: AmountType
 
 
-class TransactionOut(_Transaction, Base): ...  # noqa
+class TransactionOut(_Transaction, Base):
+    pass
 
 
-class Transaction(_Transaction):  # noqa
+class Transaction(_Transaction):
     user_id: UserType
     signature: SignatureType
 
