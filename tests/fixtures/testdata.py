@@ -1,5 +1,6 @@
-from src.models import User
 from toolkit.test_tools.base_testdata import UserData
+
+from src.models import User
 
 # The data is also used in model and crud tests
 USER_TEST_DATA = UserData(
@@ -37,15 +38,3 @@ ADMIN_TEST_DATA = UserData(
         "phone_number": "+79213452402",
     },
 )
-
-# from uuid import uuid4
-# ACCOUNT_TEST_DATA = Data(
-#     model=Account,
-#     create_data={
-#         "user_id": uuid4(),
-#         "number": "1",
-#     }
-#     update_data={
-#         "balance": 10.5,
-#     }
-# )

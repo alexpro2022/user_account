@@ -1,11 +1,11 @@
 from fastapi import status
+from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
+from toolkit.test_tools.mixins import DBMixin
 
 from src import schemas
 from src.api.endpoints import admin, user
 from tests.fixtures.testdata import USER_TEST_DATA
 from tests.integration_tests.utils import PathParamMixin
-from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
-from toolkit.test_tools.mixins import DBMixin
 
 
 class LoggedInUser(DBMixin, BaseTest_API):
@@ -15,8 +15,8 @@ class LoggedInUser(DBMixin, BaseTest_API):
 
 class Test_AuthGetMe(LoggedInUser):
     http_method = HTTPMethod.GET
-    expected_response_model = schemas.Me
     path_func = user.get_me
+    expected_response_model = schemas.Me
     expected_response_json = USER_TEST_DATA.get_expected_me_data()
 
 
@@ -37,26 +37,36 @@ class Forbidden(LoggedInUser):
     expected_response_json = {"detail": "Admin access only"}
 
 
-class Test_AuthGetAllRecords(Forbidden):
-    http_method = HTTPMethod.GET
-    path_func = admin.get_users
-
-
-class Test_AuthCreateRecord(Forbidden):
+class Test_AuthCreate(Forbidden):
     http_method = HTTPMethod.POST
     path_func = admin.create_user
 
 
-class Test_AuthGetRecord(PathParamMixin, Forbidden):
-    http_method = HTTPMethod.GET
-    path_func = admin.get_user
+class Test_AuthUpdate(PathParamMixin, Forbidden):
+    http_method = HTTPMethod.PATCH
+    path_func = admin.update_user
 
 
-class Test_AuthDeleteRecord(PathParamMixin, Forbidden):
+class Test_AuthDelete(PathParamMixin, Forbidden):
     http_method = HTTPMethod.DELETE
     path_func = admin.delete_user
 
 
-class Test_AuthUpdateRecord(PathParamMixin, Forbidden):
-    http_method = HTTPMethod.PATCH
-    path_func = admin.update_user
+class Test_AuthGetAll(Forbidden):
+    http_method = HTTPMethod.GET
+    path_func = admin.get_users
+
+
+class Test_AuthGet(PathParamMixin, Forbidden):
+    http_method = HTTPMethod.GET
+    path_func = admin.get_user
+
+
+class Test_AnonGetUserAccounts(PathParamMixin, Forbidden):
+    http_method = HTTPMethod.GET
+    path_func = admin.get_user_accounts
+
+
+class Test_AnonGetUserPayments(PathParamMixin, Forbidden):
+    http_method = HTTPMethod.GET
+    path_func = admin.get_user_payments

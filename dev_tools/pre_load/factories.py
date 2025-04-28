@@ -1,9 +1,9 @@
 from random import randint
 
 import factory as f
+from toolkit.auth.services.password import hash_password
 
 from src.models import Account, Payment, User
-from toolkit.auth.services.password import hash_password
 
 number_field = lambda name: f.Sequence(lambda n: f"{name}_{n}")  # noqa
 
