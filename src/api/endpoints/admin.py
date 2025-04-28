@@ -5,11 +5,11 @@ from toolkit.api.fastapi.responses import (
     response_403,
     response_404,
 )
+from toolkit.api.fastapi.utils import catch_already_exists, catch_not_found
 from toolkit.types_app import TypePK
 
 from src import schemas
 from src.api.dependencies import admin_access_only, async_session
-from src.api.exceptions import catch_already_exists, catch_not_found
 from src.config import app_conf, auth_config
 from src.services import user_service
 
