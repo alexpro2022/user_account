@@ -61,10 +61,11 @@ http://185.221.162.231:8001<br>
 [![GitHub_Actions](https://img.shields.io/badge/-GitHub_Actions-464646?logo=GitHub)](https://docs.github.com/en/actions)
 [![httpx](https://img.shields.io/badge/-httpx-464646?logo=httpx)](https://www.python-httpx.org/)
 [![Pytest](https://img.shields.io/badge/-Pytest-464646?logo=Pytest)](https://docs.pytest.org/en/latest/)
-[![Pytest-asyncio](https://img.shields.io/badge/-Pytest--asyncio-464646?logo=Pytest-asyncio)](https://pypi.org/project/pytest-asyncio/)
-[![pytest-cov](https://img.shields.io/badge/-pytest--cov-464646?logo=codecov)](https://pytest-cov.readthedocs.io/en/latest/)
+[![Pytest-asyncio](https://img.shields.io/badge/-pytest--asyncio-464646?logo=Pytest-asyncio)](https://pypi.org/project/pytest-asyncio/)
+[![pytest-cov](https://img.shields.io/badge/-pytest--cov-464646?logo=coverage)](https://pytest-cov.readthedocs.io/en/latest/)
 [![pre-commit](https://img.shields.io/badge/-pre--commit-464646?logo=pre-commit)](https://pre-commit.com/)
-[![factory_boy](https://img.shields.io/badge/-factory_boy-464646?logo=factory_boy)](https://factoryboy.readthedocs.io/en/stable/index.html)[![toolkit](https://img.shields.io/badge/-toolkit-464646?logo=python)](https://pypi.org/project/app-toolkit-package/)
+[![factory_boy](https://img.shields.io/badge/-factory_boy-464646?logo=factory_boy)](https://factoryboy.readthedocs.io/en/stable/index.html)
+[![toolkit](https://img.shields.io/badge/-toolkit-464646?logo=rocket)](https://pypi.org/project/app-toolkit-package/)
 
 <h1></h1>
 </details>
