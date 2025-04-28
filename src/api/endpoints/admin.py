@@ -1,18 +1,17 @@
 from fastapi import APIRouter, status
-
-from src import schemas
-from src.api.dependencies import admin_access_only, async_session
-from src.config import app_conf, auth_config
-from src.services import user_service
 from toolkit.api.fastapi.responses import (
     response_400_already_exists,
     response_401,
     response_403,
     response_404,
 )
-from toolkit.api.fastapi.utils import try_return
-from toolkit.repo.db.exceptions import AlreadyExists
+from toolkit.api.fastapi.utils import catch_already_exists, catch_not_found
 from toolkit.types_app import TypePK
+
+from src import schemas
+from src.api.dependencies import admin_access_only, async_session
+from src.config import app_conf, auth_config
+from src.services import user_service
 
 _description = dict(description=auth_config.auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)
@@ -43,17 +42,14 @@ router = APIRouter(
     responses=response_400_already_exists("user"),
     status_code=status.HTTP_201_CREATED,
 )
+@catch_already_exists
 async def create_user(
     session: async_session,
     create_data: schemas.UserCreate,
 ):
-    return await try_return(
-        return_coro=user_service.create(
-            session=session,
-            **create_data.model_dump(exclude_none=True),
-        ),
-        possible_exception=AlreadyExists,
-        raise_status_code=status.HTTP_400_BAD_REQUEST,
+    return await user_service.create(
+        session=session,
+        **create_data.model_dump(exclude_none=True),
     )
 
 
@@ -63,17 +59,16 @@ async def create_user(
     summary="Update user",
     **_common,
 )
+@catch_not_found
 async def update_user(
     session: async_session,
     user_id: TypePK,
     update_data: schemas.UserUpdate,
 ):
-    return await try_return(
-        return_coro=user_service.update(
-            session=session,
-            id=user_id,
-            **update_data.model_dump(exclude_none=True),
-        )
+    return await user_service.update(
+        session=session,
+        id=user_id,
+        **update_data.model_dump(exclude_none=True),
     )
 
 
@@ -83,15 +78,14 @@ async def update_user(
     summary="Delete user",
     **_common,
 )
+@catch_not_found
 async def delete_user(
     session: async_session,
     user_id: TypePK,
 ):
-    return await try_return(
-        return_coro=user_service.delete(
-            session=session,
-            id=user_id,
-        )
+    return await user_service.delete(
+        session=session,
+        id=user_id,
     )
 
 
@@ -111,15 +105,14 @@ async def get_users(session: async_session):
     summary="Get user",
     **_common,
 )
+@catch_not_found
 async def get_user(
     session: async_session,
     user_id: TypePK,
 ):
-    return await try_return(
-        return_coro=user_service.get(
-            session=session,
-            id=user_id,
-        )
+    return await user_service.get(
+        session=session,
+        id=user_id,
     )
 
 
@@ -130,13 +123,12 @@ async def get_user(
     **_response_404,
     response_model=list[schemas.Account],
 )
+@catch_not_found
 async def get_user_accounts(
     session: async_session,
     user_id: TypePK,
 ):
-    return await try_return(
-        return_coro=user_service.get_user_accounts(session, user_id)
-    )
+    return await user_service.get_user_accounts(session, user_id)
 
 
 @router.get(
@@ -146,10 +138,9 @@ async def get_user_accounts(
     **_response_404,
     response_model=list[schemas.Account],
 )
+@catch_not_found
 async def get_user_payments(
     session: async_session,
     user_id: TypePK,
 ):
-    return await try_return(
-        return_coro=user_service.get_user_payments(session, user_id)
-    )
+    return await user_service.get_user_payments(session, user_id)
