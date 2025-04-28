@@ -136,7 +136,7 @@ async def get_user_accounts(
     summary="User's payments",
     **_description,
     **_response_404,
-    response_model=list[schemas.Account],
+    response_model=list[schemas.Payment],
 )
 @catch_not_found
 async def get_user_payments(

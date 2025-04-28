@@ -4,10 +4,10 @@ It is just for convenient checking on development.
 """
 
 from fastapi import APIRouter
+from toolkit.api.fastapi.utils import catch_not_found
 from toolkit.types_app import TypePK
 
 from src.api.dependencies import async_session
-from src.api.exceptions import catch_not_found
 from src.services import account_service, payment_service, user_service
 
 router = APIRouter(
