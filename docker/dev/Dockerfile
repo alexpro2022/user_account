@@ -37,25 +37,4 @@ COPY alembic.ini .
 COPY alembic alembic
 # App ==============
 COPY src src
-
-
-# FROM base AS migration
-# RUN pip install alembic
-# COPY alembic.ini .
-# COPY alembic alembic
-
-
-# TO REMOVE BELOW ==========================
-# CMD uvicorn src.app:app --host=0.0.0.0 --port=8000
-# CMD uvicorn 'app:app' --host=0.0.0.0 --port=8000
-
-# docker build -t=app --target=app -f=docker/dev/Dockerfile .
-# docker build -t=test --target=test -f=docker/dev/Dockerfile .
-# docker images | head -5
-# docker history back
-# docker rmi back
-
-# docker run --name=app -it --rm app
-# docker run --name=test -it --rm test
-# docker stop back
-# docker rm back
+COPY dev_tools dev_tools
