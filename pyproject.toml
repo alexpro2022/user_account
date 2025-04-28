@@ -4,7 +4,7 @@ version = "0.0.0"
 dependencies = [
 "fastapi",
 # fastapi-users[sqlalchemy]
-# "app-toolkit-package",
+"app-toolkit-package",
 "pydantic[email]",
 "pydantic_core",
 "pydantic-settings",
