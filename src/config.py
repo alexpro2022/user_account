@@ -1,5 +1,6 @@
 from toolkit.config import (  # noqa
     app_config,
+    auth_config,
     cache_config,
     db_config,
     testdb_config,

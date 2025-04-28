@@ -1,12 +1,11 @@
 from fastapi import status
-from toolkit.test_tools.base_test_fastapi import HTTPMethod
-from toolkit.test_tools.mixins import DBMixin
 
 from src import schemas
 from src.api.endpoints import admin, user
 from tests.fixtures.testdata import USER_TEST_DATA
-from tests.fixtures.testtools import BaseTest_API
 from tests.integration_tests.utils import PathParamMixin
+from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
+from toolkit.test_tools.mixins import DBMixin
 
 
 class LoggedInUser(DBMixin, BaseTest_API):
@@ -24,12 +23,13 @@ class Test_AuthGetMe(LoggedInUser):
 class Test_AuthGetMeAccounts(LoggedInUser):
     http_method = HTTPMethod.GET
     path_func = user.get_me_accounts
-    # expected_response_model = list[schemas.Account]
     expected_response_json = []
-    # {
-    #     **USER_TEST_DATA.get_expected_me_data(),
-    #     "accounts": [],
-    # }
+
+
+class Test_AuthGetMePayments(LoggedInUser):
+    http_method = HTTPMethod.GET
+    path_func = user.get_me_payments
+    expected_response_json = []
 
 
 class Forbidden(LoggedInUser):
