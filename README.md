@@ -1,7 +1,10 @@
 # User_accounts
 
-[![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
 [![CI/CD](https://github.com/alexpro2022/user_account/actions/workflows/flow_ci_cd.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_ci_cd.yaml)
+[![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
+[![pytest](https://img.shields.io/badge/pytest-93%25-green?logo=pytest)]([https://pytest-cov.readthedocs.io/en/latest/](https://github.com/alexpro2022/user_account/actions/runs/14705769842/job/41265774425#step:7:306))
+
+<br>
 
 Проект развернут на удаленном сервере.
 Техническая документация:
