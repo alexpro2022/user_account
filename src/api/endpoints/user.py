@@ -1,18 +1,17 @@
 from fastapi import APIRouter
-from toolkit.api.fastapi.dependencies import async_session
 
 from src import schemas
-from src.auth.api.dependencies import current_user
-from src.auth.config import auth_conf
-from src.config import app_conf
+from src.api.dependencies import async_session, current_user
+from src.config import app_conf, auth_config
 from src.services import user_service
+from toolkit.api.fastapi.responses import response_401
 
-_description = dict(description=auth_conf.AUTH_ONLY)
+_description = dict(description=auth_config.auth_conf.AUTH_ONLY)
 
 router = APIRouter(
     prefix=f"{app_conf.url_prefix}/me",
     tags=["Users"],
-    # responses=401, 403
+    responses=response_401(),
 )
 
 
@@ -21,7 +20,7 @@ router = APIRouter(
     **_description,
     response_model=schemas.Me,
 )
-async def get_me(user: current_user):
+def get_me(user: current_user):
     return user
 
 
@@ -31,7 +30,7 @@ async def get_me(user: current_user):
     response_model=list[schemas.Account],
 )
 async def get_me_accounts(session: async_session, user: current_user):
-    return await user_service.get_user_accounts(session, user.id)
+    return await user_service.get_user_accounts(session, user.id, me=True)
 
 
 @router.get(
@@ -40,4 +39,4 @@ async def get_me_accounts(session: async_session, user: current_user):
     response_model=list[schemas.Payment],
 )
 async def get_me_payments(session: async_session, user: current_user):
-    return await user_service.get_user_payments(session, user.id)
+    return await user_service.get_user_payments(session, user.id, me=True)

@@ -1,23 +1,11 @@
-from typing import TypeAlias
 from uuid import uuid4
 
-from sqlalchemy import ForeignKey, String, orm
+from sqlalchemy import ForeignKey, orm
+
 from toolkit.models.base import Base, Mapped, mapped_column
-from toolkit.types_app import TypePK
-
-# UTILS =======================================================
-# from decimal import Decimal
-CurrencyType: TypeAlias = float  # Decimal
-NotRequiredStr: TypeAlias = str | None
-
-number_field = lambda **kwargs: mapped_column(  # noqa
-    String(256), unique=True, index=True, nullable=False, **kwargs
-)
-relation_field = lambda back_pop: orm.relationship(  # noqa
-    back_populates=back_pop,
-    cascade="all, delete-orphan",
-    # lazy="joined",
-)
+from toolkit.models.fields import number_field, relation_field
+from toolkit.models.user import BaseUser
+from toolkit.types_app import CurrencyType, TypePK
 
 
 def generate_account_number() -> str:
@@ -27,19 +15,9 @@ def generate_account_number() -> str:
     return str(uuid4())
 
 
-# MODELS ========================================================
-class User(Base):
-    email: Mapped[str] = mapped_column(unique=True, index=True)
-    password: Mapped[str]
-    first_name: Mapped[NotRequiredStr]
-    last_name: Mapped[NotRequiredStr]
-    phone_number: Mapped[NotRequiredStr]
+class User(BaseUser):
     admin: Mapped[bool] = mapped_column(default=False)
     accounts: Mapped[list["Account"]] = relation_field("user")
-
-    @property
-    def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
 
 
 class Account(Base):

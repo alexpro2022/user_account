@@ -1,4 +1,4 @@
-name: Your_Proj_name + _prod
+name: user_account + _prod
 
 services:
 

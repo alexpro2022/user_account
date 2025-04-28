@@ -1,11 +1,13 @@
 import sqlalchemy as sa
-from toolkit.repo.db.exceptions import NotFound
-from toolkit.types_app import _AS, TypeModel, TypePK
 
 from src import schemas
-from src.auth.services.password import hash_password
+from src.api.exceptions import InvalidTransactionSignature
 from src.models import Account, CurrencyType, Payment, User
-from src.n_toolkit.services.db_service import DBService
+from toolkit.repo.db.exceptions import NotFound
+from toolkit.services.db_service import DBService
+from toolkit.services.user import BaseUserService
+from toolkit.types_app import _AS, TypeModel, TypePK
+from toolkit.utils.misc_utils import sha256_hash
 
 
 class AccountService(DBService):
@@ -54,23 +56,38 @@ class PaymentService(DBService):
         obj: Payment | None = None,
         **create_data,
     ):
-        # from toolkit.config.db_config import async_session
         # async def transact(session):
-        #     await account_service.update_balance(session=session, id=obj.account_id, amount=obj.amount)
+        #     await account_service.update_balance(
+        #         session=session,
+        #         id=obj.account_id,
+        #         amount=obj.amount,
+        #     )
         #     return await super().create(session=session, obj=obj)
 
         if obj is None:
             obj = Payment(**create_data)
+
         # if session is not None:
         #     return await transact(session)
         # async with async_session.begin() as session:
         #     return await transact(session)
+
         await account_service.update_balance(
             session=session, account_id=obj.account_id, amount=obj.amount
         )
         return await super().create(session=session, obj=obj)
 
-    async def transaction_handler(self, session: _AS, transaction: schemas.Transaction):
+    @staticmethod
+    def check_signature(transaction: schemas.Transaction):
+        if sha256_hash(transaction.get_string()) != transaction.signature:
+            raise InvalidTransactionSignature
+        return transaction
+
+    async def transaction_handler(
+        self,
+        session: _AS,
+        transaction: schemas.Transaction,
+    ):
         """
         При обработке вебхука необходимо:
         \n  * Проверить подпись объекта
@@ -92,26 +109,28 @@ class PaymentService(DBService):
         )
 
 
-class UserService(DBService):
+class UserService(BaseUserService):
     model = User
 
-    async def create(
+    async def get_user_accounts(
         self,
-        *,
-        session: _AS | None = None,
-        obj: User | None = None,
-        **create_data,
+        session: _AS,
+        user_id: TypePK,
+        me: bool = False,
     ):
-        if obj is None:
-            obj = User(**create_data)
-        obj.password = hash_password(obj.password)
-        return await super().create(session=session, obj=obj)
-
-    async def get_user_accounts(self, session: _AS, user_id: TypePK):
+        if not me:
+            await self.get(session=session, id=user_id)
         user_accounts = sa.select(Account).where(Account.user_id == user_id)
         return (await session.scalars(user_accounts)).all()
 
-    async def get_user_payments(self, session: _AS, user_id: TypePK):
+    async def get_user_payments(
+        self,
+        session: _AS,
+        user_id: TypePK,
+        me: bool = False,
+    ):
+        if not me:
+            await self.get(session=session, id=user_id)
         user_accounts_ids = sa.select(Account.id).where(Account.user_id == user_id)
         user_payments = sa.select(Payment).where(
             Payment.account_id.in_(user_accounts_ids)

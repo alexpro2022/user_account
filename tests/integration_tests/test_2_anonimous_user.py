@@ -1,9 +1,8 @@
 from fastapi import status
-from toolkit.test_tools.base_test_fastapi import HTTPMethod
 
 from src.api.endpoints import admin, user
-from tests.fixtures.testtools import BaseTest_API
 from tests.integration_tests.utils import PathParamMixin
+from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 
 
 class UnAuthorized(BaseTest_API):
