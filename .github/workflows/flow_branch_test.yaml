@@ -17,5 +17,3 @@ on:
 jobs:
   tests:
     uses: ./.github/workflows/job_tests.yaml
-    # secrets:
-    #  codecov_token: ${{ secrets.CODECOV_TOKEN }}

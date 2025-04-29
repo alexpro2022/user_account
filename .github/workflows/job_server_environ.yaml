@@ -74,4 +74,3 @@ jobs:
           source: "docker/base/, docker/prod/"
           target: ${{ github.event.repository.name }}
           overwrite: true
-          # strip_components: 1

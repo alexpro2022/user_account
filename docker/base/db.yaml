@@ -1,6 +1,4 @@
 name: DB_services
-# https://hub.docker.com/_/postgres
-# https://docs.docker.com/reference/compose-file/interpolation/
 
 # Constants for DATABASE_URI
 const_hostname: &hostname "${DB_HOST:-${DB_DEFAULT}}"
@@ -45,7 +43,6 @@ services:
     image: postgres:${DB_TAG:-latest}
     restart: always
     healthcheck:
-      # test: ["CMD-SHELL", "pg_isready", "-U ${DB_USER} -d ${DB_NAME}"]
       test: ["CMD-SHELL", "pg_isready"]
       interval: ${INTERVAL:-10s}
       timeout: ${TIMEOUT:-5s}
@@ -76,38 +73,6 @@ services:
       POSTGRES_DB: *db_name
       POSTGRES_USER: *db_user
       POSTGRES_PASSWORD: *db_password
-      # - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     networks:
       - admin
       - backend
-
-
-# === How to connect to postgres in container ===
-
-# docker ps
-# docker exec -it <container> psql -U <postgres_user> -d <db_name>
-
-# \l -  List of databases
-#    Name    |   Owner   | Encoding |  Collate   |   Ctype    | ICU Locale | Locale Provider |    Access privileges
-# -----------+-----------+----------+------------+------------+------------+-----------------+-------------------------
-#  alex_db   | alex_user | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            |
-#  postgres  | alex_user | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            |
-#  template0 | alex_user | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/alex_user           +
-#            |           |          |            |            |            |                 | alex_user=CTc/alex_user
-#  template1 | alex_user | UTF8     | en_US.utf8 | en_US.utf8 |            | libc            | =c/alex_user           +
-#            |           |          |            |            |            |                 | alex_user=CTc/alex_user
-
-
-# \du - List of roles (users with their roles)
-#  Role name |                         Attributes                         | Member of
-# -----------+------------------------------------------------------------+-----------
-#  alex_user | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
-
-
-# \dt - List of relations (tables)
-#  Schema |      Name       | Type  |   Owner
-# --------+-----------------+-------+-----------
-#  public | alembic_version | table | alex_user
-
-
-# \q - quit

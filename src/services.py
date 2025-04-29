@@ -1,13 +1,13 @@
 import sqlalchemy as sa
-
-from src import schemas
-from src.api.exceptions import InvalidTransactionSignature
-from src.models import Account, CurrencyType, Payment, User
 from toolkit.repo.db.exceptions import NotFound
 from toolkit.services.db_service import DBService
 from toolkit.services.user import BaseUserService
 from toolkit.types_app import _AS, TypeModel, TypePK
 from toolkit.utils.misc_utils import sha256_hash
+
+from src import schemas
+from src.api.exceptions import InvalidTransactionSignature
+from src.models import Account, CurrencyType, Payment, User
 
 
 class AccountService(DBService):
@@ -56,22 +56,8 @@ class PaymentService(DBService):
         obj: Payment | None = None,
         **create_data,
     ):
-        # async def transact(session):
-        #     await account_service.update_balance(
-        #         session=session,
-        #         id=obj.account_id,
-        #         amount=obj.amount,
-        #     )
-        #     return await super().create(session=session, obj=obj)
-
         if obj is None:
             obj = Payment(**create_data)
-
-        # if session is not None:
-        #     return await transact(session)
-        # async with async_session.begin() as session:
-        #     return await transact(session)
-
         await account_service.update_balance(
             session=session, account_id=obj.account_id, amount=obj.amount
         )

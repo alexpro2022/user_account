@@ -69,9 +69,6 @@ services:
     <<: *extends_fastapi_generic
     build: *build_app
     develop: *develop
-    # volumes:  # bind mount for online coding
-    #  - ../../src:/app/src
-    # https://docs.docker.com/compose/how-tos/file-watch/
 
   fastapi_prod:
     <<: *extends_fastapi_generic
