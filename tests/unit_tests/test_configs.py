@@ -1,9 +1,10 @@
-from src import config
 from toolkit.test_tools import (
     BaseTest_Config,
     BaseTest_DBConfig,
     BaseTest_RedisConfig,
 )
+
+from src import config
 
 
 class Test_AppConfig(BaseTest_Config):

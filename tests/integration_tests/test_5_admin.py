@@ -117,12 +117,12 @@ class Test_AdminGetMe(GetMixin, LoggedInAdmin):
 
 class Test_AdminGetMeAccounts(GetMixin, LoggedInAdmin):
     path_func = user.get_me_accounts
-    expected_response_json = []
+    expected_response_json: list = []
 
 
 class Test_AdminGetMePayments(GetMixin, LoggedInAdmin):
     path_func = user.get_me_payments
-    expected_response_json = []
+    expected_response_json: list = []
 
 
 class Test_AdminGetAll(GetMixin, LoggedInAdmin):
@@ -146,7 +146,7 @@ class Test_AdminGetAccountsNotFound(GetMixin, NotFound):
 
 class Test_AdminGetAccounts(GetMixin, Found):
     path_func = admin.get_user_accounts
-    expected_response_json = []
+    expected_response_json: list = []
 
 
 class Test_AdminGetPaymentsNotFound(GetMixin, NotFound):
@@ -155,4 +155,4 @@ class Test_AdminGetPaymentsNotFound(GetMixin, NotFound):
 
 class Test_AdminGetPayments(GetMixin, Found):
     path_func = admin.get_user_payments
-    expected_response_json = []
+    expected_response_json: list = []

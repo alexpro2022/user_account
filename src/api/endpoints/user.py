@@ -1,10 +1,10 @@
 from fastapi import APIRouter
+from toolkit.api.fastapi.responses import response_401
 
 from src import schemas
 from src.api.dependencies import async_session, current_user
 from src.config import app_conf, auth_config
 from src.services import user_service
-from toolkit.api.fastapi.responses import response_401
 
 _description = dict(description=auth_config.auth_conf.AUTH_ONLY)
 

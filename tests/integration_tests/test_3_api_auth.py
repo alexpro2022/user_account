@@ -1,8 +1,9 @@
-from tests.fixtures.testdata import USER_TEST_DATA
 from toolkit.auth.api.endpoints import login_user
 from toolkit.auth.schemas import Token
 from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
+
+from tests.fixtures.testdata import USER_TEST_DATA
 
 
 class Login(BaseTest_API):

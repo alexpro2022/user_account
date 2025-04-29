@@ -23,13 +23,13 @@ class Test_AuthGetMe(LoggedInUser):
 class Test_AuthGetMeAccounts(LoggedInUser):
     http_method = HTTPMethod.GET
     path_func = user.get_me_accounts
-    expected_response_json = []
+    expected_response_json: list = []
 
 
 class Test_AuthGetMePayments(LoggedInUser):
     http_method = HTTPMethod.GET
     path_func = user.get_me_payments
-    expected_response_json = []
+    expected_response_json: list = []
 
 
 class Forbidden(LoggedInUser):

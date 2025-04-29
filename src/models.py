@@ -1,7 +1,6 @@
 from uuid import uuid4
 
 from sqlalchemy import ForeignKey, orm
-
 from toolkit.models.base import Base, Mapped, mapped_column
 from toolkit.models.fields import number_field, relation_field
 from toolkit.models.user import BaseUser
