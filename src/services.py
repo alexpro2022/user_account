@@ -2,29 +2,37 @@ import sqlalchemy as sa
 from toolkit.repo.db.exceptions import NotFound
 from toolkit.services.db_service import DBService
 from toolkit.services.user import BaseUserService
-from toolkit.types_app import _AS, TypeModel, TypePK
+from toolkit.types_app import _AS, TypePK
 from toolkit.utils.misc_utils import sha256_hash
 
 from src import schemas
 from src.api.exceptions import InvalidTransactionSignature
 from src.models import Account, CurrencyType, Payment, User
 
+# USER ================================================
+user_service = BaseUserService(User)
 
+
+# ACCOUNT =============================================
 class AccountService(DBService):
-    model = Account
-
     async def update_balance(
         self,
         *,
         session: _AS | None = None,
         account_id: TypePK,
         amount: CurrencyType,
-    ) -> TypeModel:
+    ) -> Account:
         return await self.update(
             session=session,
             id=account_id,
-            balance=amount + (await self.get(session=session, id=account_id)).balance,
+            balance=(await self.get(session=session, id=account_id)).balance + amount,
         )
+        # For below the session is needed and it wil work in the
+        # path_function but fails in pre_load:
+        #     await session.scalars(
+        #         sa.select(self.model.balance).filter_by(id=account_id)
+        #     )
+        # ).one() + amount
 
     async def get_or_create(
         self,
@@ -32,48 +40,55 @@ class AccountService(DBService):
         session: _AS | None = None,
         account_id: TypePK,
         user_id: TypePK,
-    ) -> TypeModel:
+    ) -> Account:
         try:
             return await self.get(session=session, id=account_id)
         except NotFound:
-            return await self.create(
-                session=session,
-                id=account_id,
-                user_id=user_id,
-            )
+            await user_service.exists(session=session, raise_not_found=True, id=user_id)
+            return await self.create(session=session, id=account_id, user_id=user_id)
+
+    async def get_user_accounts(
+        self,
+        session: _AS,
+        user_id: TypePK,
+    ) -> list[Account]:
+        return await self.get_all(session=session, user_id=user_id)
 
 
-account_service = AccountService()
+account_service = AccountService(Account)
 
 
+# PAYMENT =============================================
 class PaymentService(DBService):
-    model = Payment
-
     async def create(
         self,
         *,
         session: _AS | None = None,
         obj: Payment | None = None,
         **create_data,
-    ):
+    ) -> Payment:
         if obj is None:
-            obj = Payment(**create_data)
+            obj = self.model(**create_data)
+
+        payment: Payment = await super().create(session=session, obj=obj)
         await account_service.update_balance(
             session=session, account_id=obj.account_id, amount=obj.amount
         )
-        return await super().create(session=session, obj=obj)
+        return payment
 
     @staticmethod
-    def check_signature(transaction: schemas.Transaction):
-        if sha256_hash(transaction.get_string()) != transaction.signature:
-            raise InvalidTransactionSignature
-        return transaction
+    def check_signature(
+        transaction: schemas.Transaction,
+    ) -> schemas.Transaction:
+        if sha256_hash(transaction.get_string()) == transaction.signature:
+            return transaction
+        raise InvalidTransactionSignature
 
     async def transaction_handler(
         self,
         session: _AS,
         transaction: schemas.Transaction,
-    ):
+    ) -> Payment:
         """
         При обработке вебхука необходимо:
         \n  * Проверить подпись объекта
@@ -81,7 +96,7 @@ class PaymentService(DBService):
         \n  * Сохранить транзакцию в базе данных
         \n  * Начислить сумму транзакции на счет пользователя
         """
-        await account_service.get_or_create(
+        _ = await account_service.get_or_create(
             session=session,
             account_id=transaction.account_id,
             user_id=transaction.user_id,
@@ -94,35 +109,16 @@ class PaymentService(DBService):
             ),
         )
 
-
-class UserService(BaseUserService):
-    model = User
-
-    async def get_user_accounts(
-        self,
-        session: _AS,
-        user_id: TypePK,
-        me: bool = False,
-    ):
-        if not me:
-            await self.get(session=session, id=user_id)
-        user_accounts = sa.select(Account).where(Account.user_id == user_id)
-        return (await session.scalars(user_accounts)).all()
-
     async def get_user_payments(
         self,
         session: _AS,
         user_id: TypePK,
-        me: bool = False,
-    ):
-        if not me:
-            await self.get(session=session, id=user_id)
+    ) -> list[Payment]:
         user_accounts_ids = sa.select(Account.id).where(Account.user_id == user_id)
-        user_payments = sa.select(Payment).where(
-            Payment.account_id.in_(user_accounts_ids)
+        user_payments = sa.select(self.model).where(
+            self.model.account_id.in_(user_accounts_ids)
         )
         return (await session.scalars(user_payments)).all()
 
 
-payment_service = PaymentService()
-user_service = UserService()
+payment_service = PaymentService(Payment)

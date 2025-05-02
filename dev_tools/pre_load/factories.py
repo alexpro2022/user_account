@@ -7,7 +7,7 @@ from src.models import Account, Payment, User
 
 
 def number_field(name):
-    return f.Sequence(lambda n: f"{name}_{n}")  # noqa
+    return f.Sequence(lambda n: f"{name}_{n}")
 
 
 class UserFactory(f.Factory):

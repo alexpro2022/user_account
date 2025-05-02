@@ -13,11 +13,11 @@ from toolkit.types_app import NonEmptyStr, TypePK
 from src.config import app_conf
 from src.models import CurrencyType, generate_account_number
 
-# FIELDS =========================================================
+# FIELDS ============================================================
 TransactionType = Annotated[
     NonEmptyStr,
     Field(
-        description="уникальный идентификатор транзакции в “сторонней системе”",
+        description=("уникальный идентификатор транзакции в “сторонней системе”"),
         examples=["5eae174f-7cd0-472c-bd36-35660f00132b"],
     ),
 ]
@@ -65,7 +65,7 @@ SignatureType = Annotated[
 ]
 
 
-# SCHEMAS =======================================================
+# SCHEMAS ===========================================================
 class _Transaction(BaseModel):
     transaction_id: TransactionType
     account_id: AccountType
@@ -81,7 +81,10 @@ class Transaction(_Transaction):
     signature: SignatureType
 
     def get_string(self, secret_key: str = app_conf.secret_key):
-        return f"{self.account_id}{self.amount}{self.transaction_id}{self.user_id}{secret_key}"
+        return (
+            f"{self.account_id}{self.amount}{self.transaction_id}"
+            f"{self.user_id}{secret_key}"
+        )
 
 
 class Payment(Base):

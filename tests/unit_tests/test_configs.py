@@ -5,6 +5,13 @@ from toolkit.test_tools import (
 )
 
 from src import config
+from src.main import app, lifespan
+
+
+async def test__lifespan():
+    """Test lifespan is properly handling missing dev_tools import."""
+    async with lifespan(app) as ls:
+        assert ls is None
 
 
 class Test_AppConfig(BaseTest_Config):

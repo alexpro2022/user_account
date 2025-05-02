@@ -1,10 +1,22 @@
 from uuid import uuid4
 
-from sqlalchemy import ForeignKey, orm
+from sqlalchemy import ForeignKey, String, orm
 from toolkit.models.base import Base, Mapped, mapped_column
-from toolkit.models.fields import number_field, relation_field
 from toolkit.models.user import BaseUser
 from toolkit.types_app import CurrencyType, TypePK
+
+# UTILS =============================================================
+number_field = lambda **kwargs: mapped_column(  # noqa
+    String(256), unique=True, index=True, nullable=False, **kwargs
+)
+
+
+def relation_field(back_pop):
+    return orm.relationship(  # noqa
+        back_populates=back_pop,
+        cascade="all, delete-orphan",
+        # lazy="joined",
+    )
 
 
 def generate_account_number() -> str:
@@ -14,6 +26,7 @@ def generate_account_number() -> str:
     return str(uuid4())
 
 
+# MODELS ============================================================
 class User(BaseUser):
     admin: Mapped[bool] = mapped_column(default=False)
     accounts: Mapped[list["Account"]] = relation_field("user")

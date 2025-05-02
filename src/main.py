@@ -27,6 +27,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
 for router in (
     transaction.router,
     auth.router,
@@ -34,6 +35,12 @@ for router in (
     admin.router,
 ):
     app.include_router(router)
+
+
+from toolkit.api.fastapi.exception_handlers import (  # noqa
+    already_exists_exception_handler,
+    not_found_exception_handler,
+)
 
 
 @app.get("/healthcheck", tags=["Healthcheck"])
