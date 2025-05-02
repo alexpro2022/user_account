@@ -3,7 +3,6 @@ name = "user-account"
 version = "0.0.0"
 dependencies = [
 "fastapi",
-# fastapi-users[sqlalchemy]
 "app-toolkit-package",
 "pydantic[email]",
 "pydantic_core",
@@ -17,7 +16,6 @@ dependencies = [
 "passlib[bcrypt]",
 "python-multipart",
 "factory_boy",
-"aiogram",
 ]
 
 
@@ -28,10 +26,6 @@ test = [
 "pytest-asyncio",
 "pytest-cov",
 ]
-
-
-# [project.scripts]
-# bot = "src.bot.__main__.py"
 
 
 [tool.ruff]
@@ -56,6 +50,3 @@ python_files = [
     "*_tests.py",
 ]
 log_cli = "1"
-# filterwarnings =
-#    error
-#    ignore::DeprecationWarning

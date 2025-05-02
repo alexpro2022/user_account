@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status
+from toolkit.api.fastapi.responses import response_400, response_404
 
 from src import schemas
 from src.api.dependencies import async_session, transaction
 from src.services import payment_service
-from toolkit.api.fastapi.responses import response_400
 
 router = APIRouter(
     prefix="/webhook",
@@ -17,7 +17,10 @@ router = APIRouter(
     description=payment_service.transaction_handler.__doc__,
     response_model=schemas.TransactionOut,
     status_code=status.HTTP_201_CREATED,
-    responses=response_400("Invalid transaction signature."),
+    responses={
+        **response_400("Invalid transaction signature."),
+        **response_404("user"),
+    },
 )
 async def transaction_in(s: async_session, t: transaction):
     return await payment_service.transaction_handler(s, t)

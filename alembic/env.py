@@ -9,36 +9,13 @@ from alembic import context  # type: ignore
 from src.config import db_config as c  # noqa
 from src.models import Base  # noqa
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
 config = context.config
 config.set_main_option("sqlalchemy.url", str(c.db_conf.DATABASE_URI))
 
-# TO BE REMOVED !!!
-# to make migrations:
-# 1. Activate venv
-# 2. Uncomment below row:
-# config.set_main_option("sqlalchemy.url", "sqlite+aiosqlite:///./temp.db")
-# 3. Run cli-command:
-# alembic revision --autogenerate -m "migration №1"
-# If `FAILED: Target database is not up to date.` then run:
-# alembic upgrade head
-
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 
 def run_migrations_offline() -> None:

@@ -36,6 +36,6 @@ async def create_data(size: int = 3):
     return users, accounts, payments
 
 
-async def load_db():
-    await create_admin()
-    await create_data()
+# async def load_db():
+#     await create_admin()
+#     await create_data()

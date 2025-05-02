@@ -5,7 +5,9 @@ from toolkit.auth.services.password import hash_password
 
 from src.models import Account, Payment, User
 
-number_field = lambda name: f.Sequence(lambda n: f"{name}_{n}")  # noqa
+
+def number_field(name):
+    return f.Sequence(lambda n: f"{name}_{n}")
 
 
 class UserFactory(f.Factory):
