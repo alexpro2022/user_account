@@ -37,4 +37,5 @@ COPY alembic.ini .
 COPY alembic alembic
 # App ==============
 COPY src src
+# Optionally pre-load DB with app specific data
 COPY dev_tools dev_tools

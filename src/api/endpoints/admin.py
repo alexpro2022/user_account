@@ -5,13 +5,12 @@ from toolkit.api.fastapi.responses import (
     response_403,
     response_404,
 )
-from toolkit.api.fastapi.utils import catch_already_exists, catch_not_found
 from toolkit.types_app import TypePK
 
 from src import schemas
-from src.api.dependencies import admin_access_only, async_session
+from src.api.dependencies import admin_access_only, async_session, existing_user
 from src.config import app_conf, auth_config
-from src.services import user_service
+from src.services import account_service, payment_service, user_service
 
 _description = dict(description=auth_config.auth_conf.SUPER_ONLY)
 _response_model = dict(response_model=schemas.UserOut)
@@ -42,7 +41,6 @@ router = APIRouter(
     responses=response_400_already_exists("user"),
     status_code=status.HTTP_201_CREATED,
 )
-@catch_already_exists
 async def create_user(
     session: async_session,
     create_data: schemas.UserCreate,
@@ -59,7 +57,6 @@ async def create_user(
     summary="Update user",
     **_common,
 )
-@catch_not_found
 async def update_user(
     session: async_session,
     user_id: TypePK,
@@ -78,7 +75,6 @@ async def update_user(
     summary="Delete user",
     **_common,
 )
-@catch_not_found
 async def delete_user(
     session: async_session,
     user_id: TypePK,
@@ -105,7 +101,6 @@ async def get_users(session: async_session):
     summary="Get user",
     **_common,
 )
-@catch_not_found
 async def get_user(
     session: async_session,
     user_id: TypePK,
@@ -122,13 +117,13 @@ async def get_user(
     **_description,
     **_response_404,
     response_model=list[schemas.Account],
+    dependencies=[existing_user],
 )
-@catch_not_found
 async def get_user_accounts(
     session: async_session,
     user_id: TypePK,
 ):
-    return await user_service.get_user_accounts(session, user_id)
+    return await account_service.get_user_accounts(session, user_id)
 
 
 @router.get(
@@ -137,10 +132,10 @@ async def get_user_accounts(
     **_description,
     **_response_404,
     response_model=list[schemas.Payment],
+    dependencies=[existing_user],
 )
-@catch_not_found
 async def get_user_payments(
     session: async_session,
     user_id: TypePK,
 ):
-    return await user_service.get_user_payments(session, user_id)
+    return await payment_service.get_user_payments(session, user_id)

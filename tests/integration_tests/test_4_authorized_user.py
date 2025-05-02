@@ -8,11 +8,18 @@ from tests.fixtures.testdata import USER_TEST_DATA
 from tests.integration_tests.utils import PathParamMixin
 
 
+# UTILS ================================================================
 class LoggedInUser(DBMixin, BaseTest_API):
     db_save_obj = USER_TEST_DATA.get_test_obj
     login_data = USER_TEST_DATA.get_login_data()
 
 
+class Forbidden(LoggedInUser):
+    expected_status_code = status.HTTP_403_FORBIDDEN
+    expected_response_json = {"detail": "Admin access only"}
+
+
+# TESTS ================================================================
 class Test_AuthGetMe(LoggedInUser):
     http_method = HTTPMethod.GET
     path_func = user.get_me
@@ -30,11 +37,6 @@ class Test_AuthGetMePayments(LoggedInUser):
     http_method = HTTPMethod.GET
     path_func = user.get_me_payments
     expected_response_json: list = []
-
-
-class Forbidden(LoggedInUser):
-    expected_status_code = status.HTTP_403_FORBIDDEN
-    expected_response_json = {"detail": "Admin access only"}
 
 
 class Test_AuthCreate(Forbidden):

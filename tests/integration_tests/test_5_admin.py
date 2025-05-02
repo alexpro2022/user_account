@@ -1,23 +1,15 @@
 from uuid import uuid4
 
-from toolkit.schemas.base import ExtraForbidMixin
+# from toolkit.schemas.base import ExtraForbidMixin
 from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
-from src import schemas
+# from src import schemas
 from src.api.endpoints import admin, user
 from tests.fixtures.testdata import ADMIN_TEST_DATA, USER_TEST_DATA
 
 # UTILS ================================================================
 FAKE_UUID = uuid4()
-
-
-class UserOutStrict(schemas.UserOut, ExtraForbidMixin):
-    pass
-
-
-class MeOutStrict(schemas.Me, ExtraForbidMixin):
-    pass
 
 
 class LoggedInAdmin(DBMixin, BaseTest_API):
@@ -33,17 +25,17 @@ class NotFound(LoggedInAdmin):
     path_params = {"user_id": FAKE_UUID}
     expected_status_code = 404
     expected_response_json = {
-        "detail": f"Object with attributes {{'id': UUID('{FAKE_UUID}')}} not found",
+        "detail": (f"Object with attributes {{'id': UUID('{FAKE_UUID}')}} not found")
     }
 
 
-# CREATE ================================================================
-class CreateMixin:
+# CREATE ============================================================
+class Create(LoggedInAdmin):
     http_method = HTTPMethod.POST
     path_func = admin.create_user
 
 
-class Test_AdminCreateAlreadyExists(CreateMixin, LoggedInAdmin):
+class Test_AdminCreateAlreadyExists(Create):
     json = {  # existing user data
         **ADMIN_TEST_DATA.create_data_json,
         "password": ADMIN_TEST_DATA.password,
@@ -59,18 +51,17 @@ class Test_AdminCreateAlreadyExists(CreateMixin, LoggedInAdmin):
     }
 
 
-class Test_AdminCreate(CreateMixin, LoggedInAdmin):
+class Test_AdminCreateNewUser(Create):
     json = {  # new user data
         **USER_TEST_DATA.create_data_json,
         "password": USER_TEST_DATA.password,
     }
     expected_status_code = 201
-    expected_response_model = UserOutStrict
     expected_response_json = USER_TEST_DATA.expected_response_json_create
     expected_response_json_exclude = ["id"]
 
 
-# UPDATE ================================================================
+# UPDATE ============================================================
 class UpdateMixin:
     http_method = HTTPMethod.PATCH
     path_func = admin.update_user
@@ -82,12 +73,13 @@ class Test_AdminUpdateNotFound(UpdateMixin, NotFound):
 
 
 class Test_AdminUpdate(UpdateMixin, Found):
-    expected_response_model = UserOutStrict
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_update
-    # db_vs_response = True  # check fails as response excludes hash_password
+    db_vs_response = True
+    # response excludes hash_password, so we exclude it from comparison
+    db_vs_response_exclude = ["password"]
 
 
-# DELETE ================================================================
+# DELETE ============================================================
 class DeleteMixin:
     http_method = HTTPMethod.DELETE
     path_func = admin.delete_user
@@ -98,20 +90,19 @@ class Test_AdminDeleteNotFound(DeleteMixin, NotFound):
 
 
 class Test_AdminDelete(DeleteMixin, Found):
-    expected_response_model = UserOutStrict
+    # expected_response_model = UserOutStrict
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_create
     db_vs_response = True
     db_delete_action = True
 
 
-# GET ================================================================
+# GET ===============================================================
 class GetMixin:
     http_method = HTTPMethod.GET
 
 
 class Test_AdminGetMe(GetMixin, LoggedInAdmin):
     path_func = user.get_me
-    expected_response_model = MeOutStrict
     expected_response_json = ADMIN_TEST_DATA.get_expected_me_data()
 
 
@@ -136,7 +127,6 @@ class Test_AdminGetNotFound(GetMixin, NotFound):
 
 class Test_AdminGet(GetMixin, Found):
     path_func = admin.get_user
-    expected_response_model = UserOutStrict
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_create
 
 

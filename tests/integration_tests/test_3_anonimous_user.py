@@ -5,11 +5,13 @@ from src.api.endpoints import admin, user
 from tests.integration_tests.utils import PathParamMixin
 
 
+# UTILS ================================================================
 class UnAuthorized(BaseTest_API):
     expected_status_code = status.HTTP_401_UNAUTHORIZED
     expected_response_json = {"detail": "Not authenticated"}
 
 
+# TESTS ================================================================
 class Test_AnonGetMe(UnAuthorized):
     http_method = HTTPMethod.GET
     path_func = user.get_me

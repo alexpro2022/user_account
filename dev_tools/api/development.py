@@ -4,7 +4,6 @@ It is just for convenient checking on development.
 """
 
 from fastapi import APIRouter
-from toolkit.api.fastapi.utils import catch_not_found
 from toolkit.types_app import TypePK
 
 from src.api.dependencies import async_session
@@ -12,7 +11,7 @@ from src.services import account_service, payment_service, user_service
 
 router = APIRouter(
     prefix="/development",
-    tags=["Development"],
+    tags=["Development, not part of project !!!"],
 )
 
 
@@ -44,21 +43,19 @@ async def get_paymentss_development(session: async_session):
     "/{user_id}/accounts",
     summary="User's accounts ",
 )
-@catch_not_found
 async def get_user_accounts_development(
     session: async_session,
     user_id: TypePK,
 ):
-    return await user_service.get_user_accounts(session, user_id)
+    return await account_service.get_user_accounts(session, user_id)
 
 
 @router.get(
     "/{user_id}/payments",
     summary="User's payments",
 )
-@catch_not_found
 async def get_user_payments_development(
     session: async_session,
     user_id: TypePK,
 ):
-    return await user_service.get_user_payments(session, user_id)
+    return await payment_service.get_user_payments(session, user_id)
