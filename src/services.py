@@ -27,12 +27,6 @@ class AccountService(DBService):
             id=account_id,
             balance=(await self.get(session=session, id=account_id)).balance + amount,
         )
-        # For below the session is needed and it wil work in the
-        # path_function but fails in pre_load:
-        #     await session.scalars(
-        #         sa.select(self.model.balance).filter_by(id=account_id)
-        #     )
-        # ).one() + amount
 
     async def get_or_create(
         self,
@@ -44,7 +38,9 @@ class AccountService(DBService):
         try:
             return await self.get(session=session, id=account_id)
         except NotFound:
-            await user_service.exists(session=session, raise_not_found=True, id=user_id)
+            _ = await user_service.exists(
+                session=session, raise_not_found=True, id=user_id
+            )
             return await self.create(session=session, id=account_id, user_id=user_id)
 
     async def get_user_accounts(
@@ -71,7 +67,7 @@ class PaymentService(DBService):
             obj = self.model(**create_data)
 
         payment: Payment = await super().create(session=session, obj=obj)
-        await account_service.update_balance(
+        _ = await account_service.update_balance(
             session=session, account_id=obj.account_id, amount=obj.amount
         )
         return payment

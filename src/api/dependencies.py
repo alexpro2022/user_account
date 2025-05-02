@@ -1,7 +1,6 @@
 """Provides central access for all dependencies."""
 
 # Standard dependencies
-# Application specific dependencies
 from toolkit.api.fastapi.dependencies import (  # noqa
     Annotated,
     Depends,
@@ -13,6 +12,7 @@ from toolkit.auth.api.dependencies import (  # noqa
     current_user,
 )
 
+# Application specific dependencies
 from src import schemas, services
 
 transaction = Annotated[

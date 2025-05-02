@@ -1,10 +1,8 @@
 from uuid import uuid4
 
-# from toolkit.schemas.base import ExtraForbidMixin
 from toolkit.test_tools.base_test_fastapi import BaseTest_API, HTTPMethod
 from toolkit.test_tools.mixins import DBMixin
 
-# from src import schemas
 from src.api.endpoints import admin, user
 from tests.fixtures.testdata import ADMIN_TEST_DATA, USER_TEST_DATA
 
@@ -75,7 +73,7 @@ class Test_AdminUpdateNotFound(UpdateMixin, NotFound):
 class Test_AdminUpdate(UpdateMixin, Found):
     expected_response_json = ADMIN_TEST_DATA.expected_response_json_update
     db_vs_response = True
-    # response excludes hash_password, so we exclude it from comparison
+    # response excludes hash_password, so it is excluded from comparison as well
     db_vs_response_exclude = ["password"]
 
 

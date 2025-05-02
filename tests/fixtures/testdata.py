@@ -20,9 +20,9 @@ USER_TEST_DATA = UserData(
         "phone_number": "+79213452402",
         "admin": True,
     },
+    default_data={"admin": False},
     unique_fields=["email"],
     indexed_fields=["email"],
-    default_data={"admin": False},
     nullable_fields=["first_name", "last_name", "phone_number"],
 )
 
@@ -45,18 +45,18 @@ ADMIN_TEST_DATA = UserData(
 )
 
 
-TRANSACTION_TEST_DATA = dict(
-    transaction_id="transaction_id",
-    user_id=USER_TEST_DATA.uuid,
-    account_id=uuid4(),
-    amount=10.5,
-)
+TRANSACTION_TEST_DATA = {
+    "transaction_id": "transaction_id",
+    "user_id": USER_TEST_DATA.uuid,
+    "account_id": uuid4(),
+    "amount": 10.5,
+}
 
 
 def get_test_transaction(
     transaction_id: str | None = None,
     user_id: TypePK = None,
-    signature: str = "None",
+    signature: str = "None",  # should be str type for pydantic schema
 ):
     tr = Transaction(
         **TRANSACTION_TEST_DATA,
