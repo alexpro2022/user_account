@@ -2,7 +2,7 @@
 
 [![CI/CD](https://github.com/alexpro2022/user_account/actions/workflows/flow_ci_cd.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_ci_cd.yaml)
 [![Test Suite](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml/badge.svg)](https://github.com/alexpro2022/user_account/actions/workflows/flow_branch_test.yaml)
-[![pytest](https://img.shields.io/badge/pytest-95%25-light_green?logo=pytest)](https://github.com/alexpro2022/user_account/actions/runs/14718646011/job/41307783686#step:7:353)
+[![pytest](https://img.shields.io/badge/pytest-97%25-light_green?logo=pytest)](https://github.com/alexpro2022/user_account/actions/runs/14799635632/job/41555114171#step:7:416)
 
 <br>
 
