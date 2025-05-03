@@ -110,6 +110,7 @@ async def test__scenario(
     + Get me
     + Get me/accounts=[]
     + Get me/payments=[]
+    + Get user
     + Get user/accounts=1
     + Get user/payments=2
     + Delete user -> expected CASCADE deletion
@@ -320,6 +321,15 @@ async def test__scenario(
         http_method=HTTPMethod.GET,
         path_func=me.get_me_payments,
         expected_response_json=[],
+    )
+
+    # Get user
+    _ = await adm_req(
+        http_method=HTTPMethod.GET,
+        path_func=adm.get_user,
+        user_id=USER_ID,
+        expected_response_json=USER_TEST_DATA.expected_response_json_update,
+        expected_response_json_exclude=["id"],
     )
 
     # Get user/accounts=1
