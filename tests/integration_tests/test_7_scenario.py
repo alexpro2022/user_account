@@ -3,10 +3,7 @@ from uuid import UUID, uuid4
 
 from httpx import AsyncClient
 from toolkit.repo.db import crud
-from toolkit.test_tools.base_test_fastapi import (
-    HTTPMethod,
-    request,
-)
+from toolkit.test_tools.base_test_fastapi import HTTPMethod, request
 from toolkit.test_tools.utils import assert_equal, assert_isinstance
 from toolkit.types_app import _AS
 from toolkit.utils.converter import jsonable_converter as jsonify
@@ -23,24 +20,29 @@ from tests.fixtures.testdata import (
 )
 
 # UTILS =============================================================
-FAKE_ID = uuid4()
 trans_common_attrs = dict(
     http_method=HTTPMethod.POST,
     path_func=trans.transaction_in,
 )
 
 
-def not_found_common_attrs(id=FAKE_ID) -> dict:
+def not_found_common_attrs(id) -> dict:
     return dict(
-        user_id=id,
         expected_status_code=404,
         expected_response_json={
-            "detail": (f"Object with attributes {{'id': UUID('{id}')}} not found")
+            "detail": f"Object with attributes {{'id': UUID('{id}')}} not found"
         },
     )
 
 
-async def validate_seq(session: _AS, model, size):
+def not_found_user_common_attrs(id) -> dict:
+    return dict(
+        user_id=id,
+        **not_found_common_attrs(id),
+    )
+
+
+async def validate_seq(session: _AS, model, size: int) -> list:
     seq = await crud.get_all(session, model)
     assert_equal(len(seq), size)
     for obj in seq:
@@ -86,15 +88,16 @@ async def test__scenario(
     """
     Admin actions:
     + Get admin
-    + Get/Update/Delete fake user -> 404, not found user
     + Create user -> 201
     + Get all -> [admin, user]
+    + Create same user again -> 400, already exists
+    + Get all -> [admin, user] - no changes
     + Update user
     + Get all -> [intact admin, updated user ]
 
     Webhook actions for user:
     + New transaction -> 400, invalid signature
-    + New transaction -> 404, not found user
+    + New transaction -> 404, user not found
     + CRUD: check accounts=0, payments=0
     + First transaction -> 201, new account/recalc balance -> new payment
     + CRUD: check accounts=1/balance, payments=1
@@ -111,11 +114,14 @@ async def test__scenario(
     + Get user/payments=2
     + Delete user -> expected CASCADE deletion
     + CRUD: check CASCADE deletion
-    + Get user -> 404, not found user
-    + Get user/accounts -> 404, not found user
-    + Get user/payments -> 404, not found user
+    + Get, Update, Delete user -> 404, user not found
+    + Get user/accounts -> 404, user not foun
+    + Get user/payments -> 404, user not found
     """
+    # Admin request
     adm_req = partial(request, async_client, headers=admin_header)
+
+    # Transaction request
     trans_req = partial(request, async_client)
 
     # Get admin
@@ -127,24 +133,6 @@ async def test__scenario(
         )
     ).json()[0]
     ADMIN_ID = admin_json["id"]
-
-    # Get/Update/Delete fake user -> 404, not found user
-    _ = await adm_req(
-        http_method=HTTPMethod.GET,
-        path_func=adm.get_user,
-        **not_found_common_attrs(),
-    )
-    _ = await adm_req(
-        http_method=HTTPMethod.PATCH,
-        path_func=adm.update_user,
-        json=USER_TEST_DATA.update_data,
-        **not_found_common_attrs(),
-    )
-    _ = await adm_req(
-        http_method=HTTPMethod.DELETE,
-        path_func=adm.delete_user,
-        **not_found_common_attrs(),
-    )
 
     # Create user -> 201
     created_json = (
@@ -160,6 +148,21 @@ async def test__scenario(
     USER_ID = created_json["id"]
 
     # Get all -> [admin, user]
+    _ = await adm_req(
+        http_method=HTTPMethod.GET,
+        path_func=adm.get_users,
+        expected_response_json=[admin_json, created_json],
+    )
+
+    # Create same user again -> 400, already exists
+    _ = await adm_req(
+        http_method=HTTPMethod.POST,
+        path_func=adm.create_user,
+        json=USER_TEST_DATA.create_data,
+        expected_status_code=400,
+    )
+
+    # Get all -> [admin, user] - no changes
     _ = await adm_req(
         http_method=HTTPMethod.GET,
         path_func=adm.get_users,
@@ -194,82 +197,63 @@ async def test__scenario(
     )
 
     # New transaction -> 404, not found user
+    FAKE_ID = uuid4()
     _ = await trans_req(
         **trans_common_attrs,
         json=jsonify(get_test_transaction(user_id=FAKE_ID).model_dump()),
-        expected_status_code=404,
-        expected_response_json={
-            "detail": (f"Object with attributes {{'id': UUID('{FAKE_ID}')}} not found")
-        },
+        **not_found_common_attrs(FAKE_ID),
     )
 
     # CRUD: check accounts=0, payments=0
     for model in (Account, Payment):
         await validate_seq(get_test_session, model, size=0)
 
-    # First transaction -> 201, new account/recalc balance -> new payment
     first_transaction = get_test_transaction(user_id=USER_ID)
-    _ = await trans_req(
-        **trans_common_attrs,
-        json=jsonify(first_transaction.model_dump()),
-        expected_status_code=201,
-        expected_response_json_exclude=["id"],
-        expected_response_json={
-            "id": "Arbitrary UUID of created transaction",
-            "transaction_id": TRANSACTION_TEST_DATA["transaction_id"],
-            "account_id": str(TRANSACTION_TEST_DATA["account_id"]),
-            "amount": TRANSACTION_TEST_DATA["amount"],
-        },
-    )
-
-    # CRUD: check accounts=1/balance, payments=1
-    accounts = await validate_seq(get_test_session, Account, size=1)
-    validate_account(
-        account=accounts[0],
-        expected_account_id=first_transaction.account_id,
-        expected_user_id=first_transaction.user_id,
-        expected_balance=first_transaction.amount,
-    )
-    payments = await validate_seq(get_test_session, Payment, size=1)
-    validate_payment(
-        payment=payments[0],
-        expected_transaction_id=first_transaction.transaction_id,
-        expected_account_id=first_transaction.account_id,
-        expected_amount=first_transaction.amount,
-    )
-
-    # Same transaction -> 400, Already exists
-    _ = await trans_req(
-        **trans_common_attrs,
-        json=jsonify(first_transaction.model_dump()),
-        expected_status_code=400,
-        expected_response_json={
-            "detail": (
-                f"Object Payment("
-                f"transaction_id='{first_transaction.transaction_id}', "
-                f"amount={first_transaction.amount}, "
-                f"account_id=UUID('{first_transaction.account_id}'), "
-                f"id=None"
-                f") already exists"
-            )
-        },
-    )
-
-    # CRUD: check accounts, payments - no changes
-    accounts = await validate_seq(get_test_session, Account, size=1)
-    validate_account(
-        account=accounts[0],
-        expected_account_id=first_transaction.account_id,
-        expected_user_id=first_transaction.user_id,
-        expected_balance=first_transaction.amount,
-    )
-    payments = await validate_seq(get_test_session, Payment, size=1)
-    validate_payment(
-        payment=payments[0],
-        expected_transaction_id=first_transaction.transaction_id,
-        expected_account_id=first_transaction.account_id,
-        expected_amount=first_transaction.amount,
-    )
+    for attrs in (
+        dict(  # First transaction -> 201, new account/recalc balance -> new payment
+            expected_status_code=201,
+            expected_response_json_exclude=["id"],
+            expected_response_json={
+                "id": "Arbitrary UUID of created transaction",
+                "transaction_id": TRANSACTION_TEST_DATA["transaction_id"],
+                "account_id": str(TRANSACTION_TEST_DATA["account_id"]),
+                "amount": TRANSACTION_TEST_DATA["amount"],
+            },
+        ),
+        dict(  # Again same transaction -> 400, Already exists
+            expected_status_code=400,
+            expected_response_json={
+                "detail": (
+                    f"Object Payment("
+                    f"transaction_id='{first_transaction.transaction_id}', "
+                    f"amount={first_transaction.amount}, "
+                    f"account_id=UUID('{first_transaction.account_id}'), "
+                    f"id=None"
+                    f") already exists"
+                )
+            },
+        ),
+    ):
+        _ = await trans_req(
+            **trans_common_attrs,
+            json=jsonify(first_transaction.model_dump()),
+            **attrs,
+        )
+        # CRUD: check accounts=1/balance, payments=1
+        accounts = await validate_seq(get_test_session, Account, size=1)
+        validate_account(
+            account=accounts[0],
+            expected_account_id=first_transaction.account_id,
+            expected_user_id=first_transaction.user_id,
+            expected_balance=first_transaction.amount,
+        )
+        payments = await validate_seq(get_test_session, Payment, size=1)
+        validate_payment(
+            payment=payments[0],
+            expected_transaction_id=first_transaction.transaction_id,
+            expected_account_id=first_transaction.account_id,
+            expected_amount=first_transaction.amount,
+        )
 
     # Second transaction -> 201, same account/recalc balance -> new payment
     second_transaction = get_test_transaction(
@@ -296,7 +280,7 @@ async def test__scenario(
             account=accounts[0],
             expected_account_id=first_transaction.account_id,
             expected_user_id=first_transaction.user_id,
-            expected_balance=(first_transaction.amount + second_transaction.amount),
+            expected_balance=first_transaction.amount + second_transaction.amount,
         ).id
     )
     payments = await validate_seq(get_test_session, Payment, size=2)
@@ -347,8 +331,8 @@ async def test__scenario(
         expected_response_json=[
             {
                 "id": "arbitrary UUID",
-                "user_id": USER_ID,
                 "number": "arbitrary UUID",
+                "user_id": USER_ID,
                 "balance": first_transaction.amount + second_transaction.amount,
             }
         ],
@@ -364,13 +348,13 @@ async def test__scenario(
             {
                 "id": "arbitrary UUID",
                 "account_id": ACCOUNT_ID,
-                "transaction_id": "transaction_id",
+                "transaction_id": first_transaction.transaction_id,
                 "amount": first_transaction.amount,
             },
             {
                 "id": "arbitrary UUID",
                 "account_id": ACCOUNT_ID,
-                "transaction_id": "second_transaction_id",
+                "transaction_id": second_transaction.transaction_id,
                 "amount": second_transaction.amount,
             },
         ],
@@ -389,23 +373,34 @@ async def test__scenario(
     for model in (Account, Payment):
         await validate_seq(get_test_session, model, size=0)
 
-    # Get user -> 404, not found user
+    # Get/Update/Delete user -> 404, not found user
     _ = await adm_req(
         http_method=HTTPMethod.GET,
         path_func=adm.get_user,
-        **not_found_common_attrs(USER_ID),
+        **not_found_user_common_attrs(USER_ID),
+    )
+    _ = await adm_req(
+        http_method=HTTPMethod.PATCH,
+        path_func=adm.update_user,
+        json=USER_TEST_DATA.update_data,
+        **not_found_user_common_attrs(USER_ID),
+    )
+    _ = await adm_req(
+        http_method=HTTPMethod.DELETE,
+        path_func=adm.delete_user,
+        **not_found_user_common_attrs(USER_ID),
     )
 
     # Get user/accounts -> 404, not found user
     _ = await adm_req(
         http_method=HTTPMethod.GET,
         path_func=adm.get_user_accounts,
-        **not_found_common_attrs(USER_ID),
+        **not_found_user_common_attrs(USER_ID),
     )
 
     # Get user/payments -> 404, not found user
     _ = await adm_req(
         http_method=HTTPMethod.GET,
         path_func=adm.get_user_payments,
-        **not_found_common_attrs(USER_ID),
+        **not_found_user_common_attrs(USER_ID),
     )
